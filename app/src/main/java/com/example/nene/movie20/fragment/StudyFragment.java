@@ -42,6 +42,7 @@ public class StudyFragment extends Fragment {
         studyFragmentAdapter.addFragment(frag_exam.newInstance(),"在线考试");
         viewPager.setAdapter(studyFragmentAdapter);
 
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.addTab(tabLayout.newTab().setText("学习视频"));
         tabLayout.addTab(tabLayout.newTab().setText("学习文档"));
         tabLayout.addTab(tabLayout.newTab().setText("在线考试"));

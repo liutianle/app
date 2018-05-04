@@ -14,8 +14,8 @@
             android:id="@+id/movie_header"
             android:layout_width="25dp"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
             android:src="@drawable/video" />
         <TextView
             android:id="@+id/header"
@@ -25,14 +25,16 @@
             android:gravity="left|center"
             android:paddingLeft="16dp"
             android:text="test"
+            android:layout_marginTop="8dp"
             android:textColor="#000"
             android:textSize="20sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/more"
+            android:id="@+id/moreVideo"
             android:layout_weight="1"
             android:paddingRight="10dp"
+            android:layout_marginTop="8dp"
             android:gravity="right|center"
             android:textColor="#087f23"
             android:text="更多视频"

@@ -1,5 +1,6 @@
 package com.example.nene.movie20.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
 
     private TagFlowLayout flowLayout;
     private MaterialSearchBar searchBar;
+    private Intent intent;
     private String[] mtags = new String[]{"种植业", "水产业", "农副业", "畜牧业", "农资业"};
 
     @Override
@@ -74,7 +76,8 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
         flowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
-                Toast.makeText(VideoSearchActivity.this, mtags[position], Toast.LENGTH_SHORT).show();
+                intent = new Intent(VideoSearchActivity.this, VideoListActivity.class);
+                startActivity(intent);
                 return true;
             }
         });

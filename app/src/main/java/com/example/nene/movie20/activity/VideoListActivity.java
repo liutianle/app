@@ -8,6 +8,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
 
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.adapter.VideoListAdapter;
@@ -24,13 +26,26 @@ public class VideoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_video_list);
+        setTitle("");
+        //toolbar自带title
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ImageView imageView = findViewById(R.id.back);
+        imageView.setOnClickListener(mGoBack);
 
         initView();
     }
 
+    public View.OnClickListener mGoBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            finish();
+        }
+    };
     private void initView() {
         recyclerView = findViewById(R.id.video_list_rv);
         recyclerView.setLayoutManager(new GridLayoutManager(VideoListActivity.this,2));

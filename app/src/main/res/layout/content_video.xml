@@ -6,11 +6,10 @@
     android:layout_gravity="center"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginTop="8dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     app:cardBackgroundColor="#fff"
     app:cardCornerRadius="4dp"
-    app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
     <android.support.constraint.ConstraintLayout
         android:orientation="vertical"
@@ -32,6 +31,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:text="TextView"
+            android:textSize="14sp"
             android:textColor="#000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -52,9 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:text="TextView"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="#000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

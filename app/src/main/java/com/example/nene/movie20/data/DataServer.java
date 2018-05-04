@@ -2,8 +2,6 @@ package com.example.nene.movie20.data;
 
 import com.example.nene.movie20.R;
 
-import org.w3c.dom.ls.LSException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +13,20 @@ public class DataServer {
     private DataServer(){
     }
 
-    public static List<Review> getReviewData() {
-        List<Review> list = new ArrayList<>();
-        list.add(new Review(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new SubReview(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
-                new SubReview(R.drawable.forum,"田螺","不可能比得上田螺！")));
-        list.add(new Review(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new SubReview(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
-                new SubReview(R.drawable.forum,"田螺","不可能比得上田螺！")));
+    public static List<CommentDetailBean> getReviewData() {
+        List<CommentDetailBean> list = new ArrayList<>();
+        list.add(new CommentDetailBean("tom","http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png","good","3hours ago"));
+        list.add(new CommentDetailBean("tom","http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png","good","3hours ago"));
+        list.add(new CommentDetailBean("tom","http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png","good","3hours ago"));
+        list.add(new CommentDetailBean("tom","http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png","good","3hours ago"));
+//        list.add(new CommentDetailBean(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new ReplyDetailBean(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
+//                new ReplyDetailBean(R.drawable.forum,"田螺","不可能比得上田螺！")));
+//        list.add(new CommentDetailBean(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new ReplyDetailBean(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
+//                new ReplyDetailBean(R.drawable.forum,"田螺","不可能比得上田螺！")));
+//        list.add(new CommentDetailBean(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new ReplyDetailBean(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
+//                new ReplyDetailBean(R.drawable.forum,"田螺","不可能比得上田螺！")));
+//        list.add(new CommentDetailBean(new MainReview(R.drawable.admin,"小龙虾","小龙虾天下无敌！"), new ReplyDetailBean(R.drawable.eye,"大闸蟹","瞎说！大闸蟹才是！"),
+//                new ReplyDetailBean(R.drawable.forum,"田螺","不可能比得上田螺！")));
 
         return list;
     }

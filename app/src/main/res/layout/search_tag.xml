@@ -3,8 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
-    android:padding="@dimen/dp_8"
-    android:textSize="18sp"
+    android:padding="8dp"
+    android:textSize="16sp"
     android:background="@drawable/textview_round_border"
     android:textColor="@color/grey">
 

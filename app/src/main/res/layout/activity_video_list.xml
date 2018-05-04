@@ -7,18 +7,13 @@
     tools:context="com.example.nene.movie20.activity.VideoListActivity"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/myApp.AppBarOverlay">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/myApp.PopupOverlay" >
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary">
             <ImageView
+                android:id="@+id/back"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/back"/>
@@ -26,11 +21,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="学习视频"
-                android:paddingLeft="@dimen/dp_16"
+                android:paddingLeft="16dp"
                 android:textSize="20sp"/>
         </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/video_list_rv"

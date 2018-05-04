@@ -28,8 +28,8 @@ public class VideoSectionAdapter extends BaseSectionQuickAdapter<MySection, Base
     @Override
     protected void convertHead(BaseViewHolder helper, MySection item) {
         helper.setText(R.id.header, item.header);
-        helper.setVisible(R.id.more, item.isMore());
-        helper.addOnClickListener(R.id.more);
+        helper.setVisible(R.id.moreVideo, item.isMore());
+        helper.addOnClickListener(R.id.moreVideo);
     }
 
     @Override
@@ -42,6 +42,4 @@ public class VideoSectionAdapter extends BaseSectionQuickAdapter<MySection, Base
         helper.setText(R.id.number, video.getNumber());
     }
 
-    public void setOnItemChildClickListener(OnItemChildClickListener more) {
-    }
 }

@@ -10,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.nene.movie20.R;
+import com.example.nene.movie20.activity.VideoListActivity;
 import com.example.nene.movie20.activity.VideoSearchActivity;
 import com.example.nene.movie20.activity.VideoWatchActivity;
 import com.example.nene.movie20.adapter.VideoSectionAdapter;
@@ -47,13 +50,13 @@ public class frag_movie extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_movie, container, false);
 
-        SearchView searchView = view.findViewById(R.id.movie_search);
+        LinearLayout linearLayout = view.findViewById(R.id.movie_search);
 
         recyclerView = view.findViewById(R.id.rv_list);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mData = DataServer.getVideoData();
 
-        searchView.setOnClickListener(new View.OnClickListener() {
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), VideoSearchActivity.class);
@@ -67,22 +70,24 @@ public class frag_movie extends Fragment{
         movieSectionAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
-                startActivity(intent);
+                MySection section = mData.get(position);
+                if (section.isMore()){
 
-//                MySection section = mData.get(position);
-//                if (section.isHeader)
-//                    Toast.makeText(getActivity(), section.header, Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(getActivity(), section.t.getName(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
+                    startActivity(intent);
+                }
             }
         });
         movieSectionAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                Toast.makeText(getActivity(), "More", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), VideoListActivity.class);
+                startActivity(intent);
             }
         });
+
         recyclerView.setAdapter(movieSectionAdapter);
 
         return view;
