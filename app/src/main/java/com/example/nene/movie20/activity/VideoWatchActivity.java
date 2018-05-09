@@ -151,6 +151,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 boolean isExpanded = expandableListView.isGroupExpanded(groupPosition);
                 Log.e(TAG, "onGroupClick: 当前的评论id>>>"+ commentList.get(groupPosition).getId());
+                expandableListView.expandGroup(groupPosition, false);
                 showReplyDialog(groupPosition);
                 return true;
             }

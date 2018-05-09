@@ -18,7 +18,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
         <cn.jzvd.JZVideoPlayerStandard
             android:id="@+id/video_player"
@@ -76,19 +76,25 @@
             android:scrollbars="none"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                 <com.example.nene.movie20.utils.ExpandableListViewHelper
+                     android:id="@+id/review_list"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:divider="@null"
+                     android:listSelector="@android:color/transparent"
+                     android:scrollbars="none">
 
-         <ExpandableListView
-             android:id="@+id/review_list"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:divider="@null"
-             android:listSelector="@android:color/transparent"
-             >
-
-         </ExpandableListView>
+                 </com.example.nene.movie20.utils.ExpandableListViewHelper>
+            </android.support.v4.widget.NestedScrollView>
         </LinearLayout>
+
     </android.support.design.widget.CoordinatorLayout>
-    <LinearLayout
+
+
+<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="58dp"
         android:layout_alignParentBottom="true"
@@ -110,7 +116,6 @@
             android:gravity="center_vertical"
             android:paddingLeft="18dp"/>
     </LinearLayout>
-
 
 </RelativeLayout>
 

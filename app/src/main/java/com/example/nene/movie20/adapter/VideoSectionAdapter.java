@@ -1,10 +1,13 @@
 package com.example.nene.movie20.adapter;
 
+import android.widget.ImageView;
+
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.data.MySection;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,7 +39,9 @@ public class VideoSectionAdapter extends BaseSectionQuickAdapter<MySection, Base
     protected void convert(BaseViewHolder helper, MySection item) {
         Video video = item.t;
 //        helper.setImageResource(R.id.movie_header,R.drawable.video);
-        helper.setImageResource(R.id.movie_cover, video.getImg());
+        ImageView imageView = helper.getView(R.id.movie_cover);
+        Picasso.get().load(video.getImg()).into(imageView);
+//        helper.setImageResource(R.id.movie_cover, video.getImg());
         helper.setText(R.id.construction, video.getName());
         helper.setImageResource(R.id.eye, R.drawable.eye);
         helper.setText(R.id.number, video.getNumber());

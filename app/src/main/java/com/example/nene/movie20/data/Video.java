@@ -5,19 +5,31 @@ package com.example.nene.movie20.data;
  */
 
 public class Video {
-    private int img;
+    private String img;
     private String name;
     private String number;
+    private int id;
 
-    public Video(int img, String name, String number){
+    public Video(String img, String name, String number, int id) {
         this.img = img;
         this.name = name;
         this.number = number;
+        this.id = id;
     }
 
-    public int getImg(){
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public String getImg() {
         return img;
     }
+
     public void setImg(){
         this.img = img;
     }

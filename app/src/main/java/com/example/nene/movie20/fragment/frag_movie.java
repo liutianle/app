@@ -2,6 +2,7 @@ package com.example.nene.movie20.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +24,8 @@ import com.example.nene.movie20.activity.VideoWatchActivity;
 import com.example.nene.movie20.adapter.VideoSectionAdapter;
 import com.example.nene.movie20.data.DataServer;
 import com.example.nene.movie20.data.MySection;
+import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.models.VideoInf;
 
 import java.util.List;
 
@@ -76,6 +79,7 @@ public class frag_movie extends Fragment{
                 }
                 else{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
+                    intent.putExtra("id", mData.get(position).t.getId());
                     startActivity(intent);
                 }
             }
