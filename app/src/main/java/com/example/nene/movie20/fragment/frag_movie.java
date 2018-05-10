@@ -26,6 +26,7 @@ import com.example.nene.movie20.data.DataServer;
 import com.example.nene.movie20.data.MySection;
 import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.VideoInf;
+import com.example.nene.movie20.utils.VideoUtils;
 
 import java.util.List;
 
@@ -79,7 +80,8 @@ public class frag_movie extends Fragment{
                 }
                 else{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
-                    intent.putExtra("id", mData.get(position).t.getId());
+//                    intent.putExtra("id", mData.get(position).t.getId());
+                    VideoUtils.getVideoInf(mData.get(position).t.getId());
                     startActivity(intent);
                 }
             }

@@ -26,6 +26,8 @@ import com.example.nene.movie20.adapter.VideoReviewAdapter;
 import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
+import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.utils.VideoUtils;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -105,7 +107,6 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             "\t}\n" +
             "}";
 
-    String url = "http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4";
     String title = "TEST";
 
     @Override
@@ -117,6 +118,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
         iniVideo();
         initText();
+
 
         initedit();
         initView();
@@ -355,6 +357,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void iniVideo() {
+        String url = VideoUtils.Url;
         JZVideoPlayerStandard jzVideoPlayerStandard = findViewById(R.id.video_player);
         jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
     }

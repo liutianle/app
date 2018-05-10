@@ -1,10 +1,8 @@
 package com.example.nene.movie20.data;
 
-import com.example.nene.movie20.R;
 import com.example.nene.movie20.models.VideoInf;
-import com.example.nene.movie20.utils.GetHotVideoUtils;
-import com.example.nene.movie20.utils.GetNewVideoUtils;
 import com.example.nene.movie20.utils.GetTokenUtils;
+import com.example.nene.movie20.utils.VideoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +48,15 @@ public class DataServer {
 
         List<MySection> list = new ArrayList<>();
         list.add(new MySection(true,"最新视频",true));
-        GetNewVideoUtils.getVideo();
-        for (VideoInf.ResultBean v: GetNewVideoUtils.Video) {
+        VideoUtils.getNewVideo();
+        for (VideoInf.ResultBean v: VideoUtils.Video) {
             //为各个数据赋值
             list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId())));
         }
 
         list.add(new MySection(true,"最热视频",true));
-        GetHotVideoUtils.getVideo();
-        for (VideoInf.ResultBean v:GetHotVideoUtils.Video) {
+        VideoUtils.getHotVideo();
+        for (VideoInf.ResultBean v:VideoUtils.Video) {
             list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId())));
         }
 

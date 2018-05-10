@@ -18,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class VideoUtils {
+    public static String Url;
     public static List<VideoInf.ResultBean> Video;
 
     public static void getVideoInf(int id){
@@ -40,7 +41,7 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoUrlInf> response = call.execute();
-                    System.out.println(response);
+                    Url = response.body().getUrl();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -75,7 +76,7 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoInf> response = call.execute();
-                    Video = response.body().getResult();
+                    Video = response.body().getResults();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -111,7 +112,7 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoInf> response = call.execute();
-                    Video = response.body().getResult();
+                    Video = response.body().getResults();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -146,7 +147,7 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoInf> response = call.execute();
-                    Video = response.body().getResult();
+                    Video = response.body().getResults();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
