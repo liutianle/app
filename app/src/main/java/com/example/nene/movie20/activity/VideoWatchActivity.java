@@ -107,8 +107,6 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             "\t}\n" +
             "}";
 
-    String title = "TEST";
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -351,15 +349,15 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private void initText() {
         TextView title = findViewById(R.id.movie_title);
         TextView content = findViewById(R.id.movie_content);
-        title.setText("小龙虾的养殖");
-        content.setText("这样养大的小龙虾更好吃哦！");
+        title.setText(VideoUtils.title);
+        content.setText(VideoUtils.disc);
 
     }
 
     private void iniVideo() {
         String url = VideoUtils.Url;
         JZVideoPlayerStandard jzVideoPlayerStandard = findViewById(R.id.video_player);
-        jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
+        jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, VideoUtils.title);
     }
 
     @Override

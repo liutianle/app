@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.R;
+import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.models.VideoUrlInf;
+import com.example.nene.movie20.utils.VideoUtils;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
@@ -41,6 +44,7 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
         flowLayout = findViewById(R.id.tag);
 
         searchBar = findViewById(R.id.searchBar);
+        VideoUtils.getSearchVideo(searchBar.getText());
         searchBar.setOnSearchActionListener(this);
         searchBar.setCardViewElevation(10);
         searchBar.addTextChangeListener(new TextWatcher() {

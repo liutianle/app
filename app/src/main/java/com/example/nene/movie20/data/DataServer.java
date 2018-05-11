@@ -1,5 +1,6 @@
 package com.example.nene.movie20.data;
 
+import com.example.nene.movie20.R;
 import com.example.nene.movie20.models.VideoInf;
 import com.example.nene.movie20.utils.GetTokenUtils;
 import com.example.nene.movie20.utils.VideoUtils;
@@ -35,10 +36,10 @@ public class DataServer {
 
     public static List<Video> getVideoListData(){
         List<Video> list = new ArrayList<>();
-//        list.add(new Video(R.drawable.m2,"小龙虾的养殖","666"));
-//        list.add(new Video(R.drawable.m2,"螃蟹的养殖","6666"));
-//        list.add(new Video(R.drawable.m1,"菱角的养殖","66666"));
-//        list.add(new Video(R.drawable.m2,"水稻的养殖","666666"));
+        for (VideoInf.ResultBean v:VideoUtils.Video
+             ) {
+            list.add(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId()));
+        }
         return list;
     }
 
