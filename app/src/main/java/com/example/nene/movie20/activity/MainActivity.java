@@ -20,11 +20,12 @@ import com.example.nene.movie20.fragment.ForumFragment;
 import com.example.nene.movie20.fragment.StudyFragment;
 import com.example.nene.movie20.fragment.UserFragment;
 import com.example.nene.movie20.utils.BottomNavigationViewHelper;
+import com.example.nene.movie20.utils.ButtonNavigationSwiping;
 import com.jaeger.library.StatusBarUtil;
 
 public class MainActivity extends AppCompatActivity {
-    BottomNavigationView navigationView;
-    ViewPager viewPager;
+    private BottomNavigationView navigationView;
+    private ButtonNavigationSwiping viewPager;
     private MenuItem menuItem;
 
     @Override
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
 
     }
 

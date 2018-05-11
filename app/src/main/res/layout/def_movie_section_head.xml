@@ -36,7 +36,7 @@
             android:paddingRight="10dp"
             android:layout_marginTop="8dp"
             android:gravity="right|center"
-            android:textColor="#087f23"
+            android:textColor="@color/colorAccent"
             android:text="更多视频"
             android:textSize="18sp"/>
 

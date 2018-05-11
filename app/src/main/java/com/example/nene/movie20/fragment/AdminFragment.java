@@ -8,4 +8,12 @@ import android.support.v4.app.FragmentActivity;
  */
 
 public class AdminFragment extends Fragment {
+    private static AdminFragment instance = null;
+
+    public static Fragment newInstance() {
+        if (instance == null){
+            instance = new AdminFragment();
+        }
+        return instance;
+    }
 }
