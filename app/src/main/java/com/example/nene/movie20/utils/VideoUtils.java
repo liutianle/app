@@ -91,6 +91,41 @@ public class VideoUtils {
     }
 
 
+    public static void getMoreNewVideo() {
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoInf> call = getVideoInterface.getPage("1", "4", "-add_time");
+
+        //步骤6:发送网络请求(同步)
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response<VideoInf> response = call.execute();
+                    Video = response.body().getResults();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
     public static void getHotVideo() {
@@ -127,8 +162,7 @@ public class VideoUtils {
     }
 
 
-
-    public static void addVideoCount() {
+    public static void getMoreHotVideo() {
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
@@ -160,4 +194,37 @@ public class VideoUtils {
             e.printStackTrace();
         }
     }
+    public static void getHotVideo(String search) {
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoInf> call = getVideoInterface.getSearch(search);
+
+        //步骤6:发送网络请求(同步)
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response<VideoInf> response = call.execute();
+                    Video = response.body().getResults();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
