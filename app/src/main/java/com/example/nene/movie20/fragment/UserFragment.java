@@ -8,4 +8,12 @@ import android.support.v4.app.FragmentActivity;
  */
 
 public class UserFragment extends Fragment {
+    private static UserFragment instance = null;
+
+    public static Fragment newInstance() {
+        if (instance == null){
+            instance = new UserFragment();
+        }
+        return instance;
+    }
 }

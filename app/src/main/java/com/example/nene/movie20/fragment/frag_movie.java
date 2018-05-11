@@ -80,7 +80,7 @@ public class frag_movie extends Fragment{
                 }
                 else{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
-//                    intent.putExtra("id", mData.get(position).t.getId());
+                    intent.putExtra("id", mData.get(position).t.getId());
                     VideoUtils.getVideoInf(mData.get(position).t.getId());
                     startActivity(intent);
                 }
