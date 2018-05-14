@@ -21,4 +21,6 @@ public interface GetVideoInterface {
 
     @HTTP(method = "GET", path = "video/{id}/", hasBody = false)
     Call<VideoUrlInf> getId(@Path("id") int id);
+    @GET("video/")
+    Call<VideoInf> getSearch(@Query("search") String search);
 }

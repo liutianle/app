@@ -19,6 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VideoUtils {
     public static String Url;
+    public static String title;
+    public static String disc;
+
     public static List<VideoInf.ResultBean> Video;
 
     public static void getVideoInf(int id){
@@ -33,7 +36,6 @@ public class VideoUtils {
 
         //对 发送请求 进行封装
         final Call<VideoUrlInf> call = getVideoInterface.getId(id);
-//        final Call<VideoInf> call = getVideoInterface.getId("1", "4", "-click_num");
 
         //步骤6:发送网络请求(同步)
         Thread thread = new Thread(new Runnable() {
@@ -42,6 +44,8 @@ public class VideoUtils {
                 try {
                     Response<VideoUrlInf> response = call.execute();
                     Url = response.body().getUrl();
+                    title=response.body().getVideo_name();
+                    disc=response.body().getDesc();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,6 +95,41 @@ public class VideoUtils {
     }
 
 
+    public static void getMoreNewVideo() {
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoInf> call = getVideoInterface.getPage("1", "12", "-add_time");
+
+        //步骤6:发送网络请求(同步)
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response<VideoInf> response = call.execute();
+                    Video = response.body().getResults();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
     public static void getHotVideo() {
@@ -127,8 +166,7 @@ public class VideoUtils {
     }
 
 
-
-    public static void addVideoCount() {
+    public static void getMoreHotVideo() {
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
@@ -139,7 +177,7 @@ public class VideoUtils {
         final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
 
         //对 发送请求 进行封装
-        final Call<VideoInf> call = getVideoInterface.getPage("1", "4", "-click_num");
+        final Call<VideoInf> call = getVideoInterface.getPage("1", "12", "-click_num");
 
         //步骤6:发送网络请求(同步)
         Thread thread = new Thread(new Runnable() {
@@ -160,4 +198,40 @@ public class VideoUtils {
             e.printStackTrace();
         }
     }
+
+    public static void getSearchVideo(final String search) {
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoInf> call = getVideoInterface.getSearch(search);
+
+        //步骤6:发送网络请求(同步)
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response<VideoInf> response = call.execute();
+                    Video = response.body().getResults();
+                    System.out.println(response);
+                    System.out.println(search);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

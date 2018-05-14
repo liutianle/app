@@ -80,8 +80,9 @@ public class frag_movie extends Fragment{
                 }
                 else{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
-                    intent.putExtra("id", mData.get(position).t.getId());
                     VideoUtils.getVideoInf(mData.get(position).t.getId());
+                    movieSectionAdapter.notifyDataSetChanged();
+                    //刷新页面d
                     startActivity(intent);
                 }
             }
@@ -90,9 +91,17 @@ public class frag_movie extends Fragment{
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(getActivity(), VideoListActivity.class);
+                if (position == 0){
+                    VideoUtils.getMoreNewVideo();
+                }
+
+                if (position == 5){
+                    VideoUtils.getMoreHotVideo();
+                }
                 startActivity(intent);
             }
         });
+
 
         recyclerView.setAdapter(movieSectionAdapter);
 

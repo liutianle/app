@@ -9,13 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.R;
+import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.models.VideoUrlInf;
+import com.example.nene.movie20.utils.VideoUtils;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
@@ -26,12 +32,14 @@ import com.zhy.view.flowlayout.TagFlowLayout;
  * Created by nene on 2018/4/16.
  */
 
-public class VideoSearchActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener{
+public class VideoSearchActivity extends AppCompatActivity{
 
     private TagFlowLayout flowLayout;
-    private MaterialSearchBar searchBar;
+    private EditText searchBar;
     private Intent intent;
+    private String search_result;
     private String[] mtags = new String[]{"种植业", "水产业", "农副业", "畜牧业", "农资业"};
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,27 +47,29 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
         setContentView(R.layout.search_movie);
 
         flowLayout = findViewById(R.id.tag);
-
         searchBar = findViewById(R.id.searchBar);
-        searchBar.setOnSearchActionListener(this);
-        searchBar.setCardViewElevation(10);
-        searchBar.addTextChangeListener(new TextWatcher() {
+
+
+        initView();
+        initSearch();
+    }
+
+    private void initSearch() {
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                    search_result = searchBar.getText().toString();
+                    VideoUtils.getSearchVideo(searchBar.getText().toString());
+                    intent = new Intent(VideoSearchActivity.this, VideoSearchResultActivity.class);
+                    intent.putExtra("search_result", search_result);
+                    startActivity(intent);
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d("LOG_TAG", getClass().getSimpleName() + " text changed " + searchBar.getText());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+                    return true;
+                }
+                return false;
             }
         });
-        initView();
     }
 
     private void initView() {
@@ -84,30 +94,6 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
     }
 
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
-
-    @Override
-    public void onSearchStateChanged(boolean enabled) {
-
-    }
-
-    @Override
-    public void onSearchConfirmed(CharSequence text) {
-
-    }
-
-    @Override
-    public void onButtonClicked(int buttonCode) {
-        switch (buttonCode){
-            case MaterialSearchBar.BUTTON_BACK:
-            searchBar.disableSearch();
-            break;
-        }
-    }
 }
 
 
