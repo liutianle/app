@@ -1,6 +1,7 @@
 package com.example.nene.movie20.adapter;
 
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;

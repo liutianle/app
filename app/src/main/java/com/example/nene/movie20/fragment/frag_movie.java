@@ -82,6 +82,8 @@ public class frag_movie extends Fragment{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
                     DataServer.getVideoData();
                     VideoUtils.getVideoInf(mData.get(position).t.getId());
+                    movieSectionAdapter.notifyDataSetChanged();
+                    //刷新页面d
                     startActivity(intent);
                 }
             }
@@ -101,6 +103,7 @@ public class frag_movie extends Fragment{
                 startActivity(intent);
             }
         });
+
 
         recyclerView.setAdapter(movieSectionAdapter);
 

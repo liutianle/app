@@ -38,8 +38,19 @@ public class DataServer {
         List<Video> list = new ArrayList<>();
         for (VideoInf.ResultBean v:VideoUtils.Video
              ) {
-            list.add(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId()));
+            list.add(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId()));
         }
+        return list;
+    }
+    public static List<Video> getVideoResultData(){
+        List<Video> list = new ArrayList<>();
+        if(VideoUtils.Video != null) {
+            for (VideoInf.ResultBean v : VideoUtils.Video) {
+                list.add(new Video(v.getVideo_img(), v.getVideo_name(), v.getClick_num(), v.getDesc(), v.getId()));
+
+            }
+        }
+//        list.add(new Video("https://i.stack.imgur.com/wrEpx.jpg?s=32&g=1","1","22","3",1));
         return list;
     }
 
@@ -51,13 +62,13 @@ public class DataServer {
         VideoUtils.getNewVideo();
         for (VideoInf.ResultBean v: VideoUtils.Video) {
             //为各个数据赋值
-            list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId())));
+            list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
         }
 
         list.add(new MySection(true,"最热视频",true));
         VideoUtils.getHotVideo();
         for (VideoInf.ResultBean v:VideoUtils.Video) {
-            list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getId())));
+            list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
         }
 
         return list;

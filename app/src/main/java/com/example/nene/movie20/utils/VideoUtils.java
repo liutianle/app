@@ -203,7 +203,7 @@ public class VideoUtils {
         }
     }
 
-    public static void getSearchVideo(String search) {
+    public static void getSearchVideo(final String search) {
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
@@ -223,6 +223,8 @@ public class VideoUtils {
                 try {
                     Response<VideoInf> response = call.execute();
                     Video = response.body().getResults();
+                    System.out.println(response);
+                    System.out.println(search);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
