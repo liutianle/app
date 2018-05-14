@@ -1,5 +1,6 @@
 package com.example.nene.movie20.activity;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,18 +13,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.nene.movie20.R;
+import com.example.nene.movie20.models.Token;
 import com.example.nene.movie20.utils.GetTokenUtils;
 
-public class LoginActivity extends AppCompatActivity {
+import retrofit2.http.GET;
 
-    private EditText username, password;
-    private Button bt_username_clear;
-    private Button bt_pwd_clear;
-    private Button forgive_pwd;
-    private Button bt_pwd_eye;
-    private Button login;
-    private Button register;
-    private boolean isOpen = false;
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +42,19 @@ public class LoginActivity extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editText_username = (EditText)findViewById(R.id.editText1);
-                EditText editText_password = (EditText)findViewById(R.id.editText2);
+                SharedPreferences preferences =getSharedPreferences("Token" , 0);
+                String Token = preferences.getString("Token" , "");
+
+
+
+                EditText editText_username = findViewById(R.id.editText1);
+                EditText editText_password = findViewById(R.id.editText2);
                 GetTokenUtils.getToken(editText_username.getText().toString(),editText_password.getText().toString());
+                preferences = getSharedPreferences("Token",0);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("Token", GetTokenUtils.Token);
+                editor.putBoolean("or", false);
+                editor.commit();
             }
         });
 

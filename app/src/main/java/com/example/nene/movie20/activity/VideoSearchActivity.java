@@ -81,7 +81,13 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 intent = new Intent(VideoSearchActivity.this, VideoListActivity.class);
-
+                switch (position) {
+                    case 0: VideoUtils.getKindVideo("plant"); break;
+                    case 1: VideoUtils.getKindVideo("aquaculture"); break;
+                    case 2: VideoUtils.getKindVideo("agri_and_sideline_industries"); break;
+                    case 3: VideoUtils.getKindVideo("animal"); break;
+                    case 4: VideoUtils.getKindVideo("agri_industry"); break;
+                }
                 startActivity(intent);
                 return true;
             }

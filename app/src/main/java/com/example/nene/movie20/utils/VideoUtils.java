@@ -1,9 +1,12 @@
 package com.example.nene.movie20.utils;
 
 import com.example.nene.movie20.Interface.GetVideoInterface;
+import com.example.nene.movie20.Interface.Video_comInterface;
+import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.VideoInf;
 import com.example.nene.movie20.models.VideoUrlInf;
+import com.example.nene.movie20.models.Video_com;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
 
 /**
  * Created by sam- on 2018/5/9.
@@ -232,6 +236,12 @@ public class VideoUtils {
         }
     }
 
+    //kind有
+    // 1.plant
+    // 2.agri_and_sideline_industries
+    // 3.agri_industry
+    // 4.aquaculture
+    // 5.animal
     public static void getKindVideo(String kind) {
         //步骤4:创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()

@@ -15,11 +15,11 @@
         android:theme="@style/myApp"
         tools:replace="android:theme">
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.VideoSearchActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
+        <!--<activity android:name=".activity.VideoSearchActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity
             android:name=".activity.VideoWatchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -50,8 +50,9 @@
         <activity
             android:name=".activity.VideoListActivity"
             android:label="@string/title_activity_video_list"
-            android:theme="@style/myApp"></activity>
-        <activity android:name=".activity.LoginActivity"></activity>
+            android:theme="@style/myApp" />
+        <activity android:name=".activity.LoginActivity">
+        </activity>
     </application>
 
 </manifest>

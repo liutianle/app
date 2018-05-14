@@ -10,7 +10,7 @@ import retrofit2.http.GET;
 /**
  * Created by sam- on 2018/4/24.
  */
-public interface UpdateUserInformationInterface {
+public interface UserInfInterface {
     @GET("read/")
     Call<UserInformation> getinformation(@Field("id") String id);
 }

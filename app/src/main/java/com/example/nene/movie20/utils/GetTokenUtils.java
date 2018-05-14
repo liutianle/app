@@ -7,6 +7,8 @@ import com.example.nene.movie20.Interface.LoginInterface;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.Token;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,26 +32,25 @@ public class GetTokenUtils {
         final LoginInterface request = retrofit.create(LoginInterface.class);
 
         //对 发送请求 进行封装
-        Call<Token> call = request.getCall(Username, Password);
+        final Call<Token> call = request.getCall(Username, Password);
 
         //步骤6:发送网络请求(异步)
-        call.enqueue(new Callback<Token>() {
-            //请求成功时回调
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
-                // 步骤7：处理返回的数据结果
-                if (response.isSuccessful()) {
+            public void run() {
+                try {
+                    Response<Token> response =  call.execute();
                     Token = response.body().getToken();
-                } else {
-                    System.out.println("错误");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
-            //请求失败时回调
-            @Override
-            public void onFailure(Call<Token> call, Throwable throwable) {
-                System.out.println("失败");
-            }
         });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
