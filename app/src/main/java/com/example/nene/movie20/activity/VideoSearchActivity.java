@@ -81,6 +81,7 @@ public class VideoSearchActivity extends AppCompatActivity implements  Navigatio
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 intent = new Intent(VideoSearchActivity.this, VideoListActivity.class);
+
                 startActivity(intent);
                 return true;
             }

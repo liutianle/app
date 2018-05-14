@@ -80,6 +80,7 @@ public class frag_movie extends Fragment{
                 }
                 else{
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
+                    DataServer.getVideoData();
                     VideoUtils.getVideoInf(mData.get(position).t.getId());
                     startActivity(intent);
                 }
@@ -89,6 +90,7 @@ public class frag_movie extends Fragment{
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(getActivity(), VideoListActivity.class);
+                DataServer.getVideoData();
                 if (position == 0){
                     VideoUtils.getMoreNewVideo();
                 }

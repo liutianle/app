@@ -45,7 +45,6 @@ public class DataServer {
 
 
     public static List<MySection> getVideoData(){
-        GetTokenUtils.getToken();
 
         List<MySection> list = new ArrayList<>();
         list.add(new MySection(true,"最新视频",true));

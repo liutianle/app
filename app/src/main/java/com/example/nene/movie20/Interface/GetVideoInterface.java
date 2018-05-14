@@ -23,4 +23,6 @@ public interface GetVideoInterface {
     Call<VideoUrlInf> getId(@Path("id") int id);
     @GET("video/")
     Call<VideoInf> getSearch(@Query("search") String search);
+    @GET("video/")
+    Call<VideoInf> getKind(@Query("video_kind") String kind);
 }
