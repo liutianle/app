@@ -42,7 +42,6 @@ public class VideoSearchResultActivity extends AppCompatActivity {
         setText = findViewById(R.id.search_bar_result);
         intent = getIntent();
         String result = intent.getStringExtra("search_result");
-        System.out.println(result);
         setText.setText(result);
     }
 

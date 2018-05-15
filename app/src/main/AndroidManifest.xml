@@ -15,7 +15,10 @@
         android:theme="@style/myApp"
         tools:replace="android:theme">
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.VideoSearchActivity"></activity>
+        <activity android:name=".activity.VideoSearchActivity">
+
+        </activity>
+
         <activity
             android:name=".activity.VideoWatchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -40,6 +43,16 @@
             android:label="@string/title_activity_intro"
             android:theme="@style/myApp" />
         <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_Login"
+            android:theme="@style/myApp">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity
             android:name=".activity.VideoReviewActivity"
             android:label="@string/title_activity_intro"
             android:theme="@style/myApp" />
@@ -51,7 +64,6 @@
             android:name=".activity.VideoSearchResultActivity"
             android:label="@string/title_activity_video_search_result"
             android:theme="@style/myApp"></activity>
-        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>
