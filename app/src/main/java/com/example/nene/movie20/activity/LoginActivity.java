@@ -10,11 +10,13 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.models.Token;
 import com.example.nene.movie20.utils.GetTokenUtils;
+import com.jaeger.library.StatusBarUtil;
 
 import retrofit2.http.GET;
 
@@ -24,8 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        StatusBarUtil.setColor(LoginActivity.this, getResources().getColor(R.color.white));
 
-        Button btn1 = (Button) this.findViewById(R.id.button);
+        TextView btn1 =this.findViewById(R.id.button);
 
         btn1.setOnClickListener(new View.OnClickListener()
         {
