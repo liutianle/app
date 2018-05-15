@@ -18,6 +18,7 @@
         <activity android:name=".activity.VideoSearchActivity">
 
         </activity>
+
         <activity
             android:name=".activity.VideoWatchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -31,7 +32,11 @@
             android:name=".activity.SplashActivity"
             android:label="@string/title_activity_splash"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.intro"
@@ -54,13 +59,11 @@
         <activity
             android:name=".activity.VideoListActivity"
             android:label="@string/title_activity_video_list"
-            android:theme="@style/myApp"></activity>
+            android:theme="@style/myApp" />
         <activity
             android:name=".activity.VideoSearchResultActivity"
             android:label="@string/title_activity_video_search_result"
-            android:theme="@style/myApp">
-        </activity>
-
+            android:theme="@style/myApp"></activity>
     </application>
 
 </manifest>
