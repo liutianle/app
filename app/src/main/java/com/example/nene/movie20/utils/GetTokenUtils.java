@@ -40,7 +40,9 @@ public class GetTokenUtils {
             public void run() {
                 try {
                     Response<Token> response =  call.execute();
-                    Token = response.body().getToken();
+                    if(response.isSuccessful()) {
+                        Token = response.body().getToken();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

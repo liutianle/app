@@ -46,6 +46,18 @@ public class intro extends AppIntro implements ISlideBackgroundColorHolder {
         editor = sharedPreferences.edit();
         editor.putBoolean("isFirstIn",false);
         editor.commit();
+        SharedPreferences preferences = this.getSharedPreferences("Token", 0);
+        boolean is_login = preferences.getBoolean("is_Login", true);
+        if(is_login){
+            Intent intent1 = new Intent(intro.this, LoginActivity.class);
+            intro.this.startActivity(intent1);
+            intro.this.finish();
+        } else {
+            Intent intent2 = new Intent(intro.this, MainActivity.class);
+            intro.this.startActivity(intent2);
+            intro.this.finish();
+        }
+
         this.finish();
     }
 
@@ -59,6 +71,16 @@ public class intro extends AppIntro implements ISlideBackgroundColorHolder {
         editor = sharedPreferences.edit();
         editor.putBoolean("isFirstIn",false);
         editor.commit();
+        SharedPreferences preferences = this.getSharedPreferences("Token", 0);
+        boolean is_login = preferences.getBoolean("is_Login", true);
+        if(is_login){
+            Intent intent1 = new Intent(intro.this, LoginActivity.class);
+            intro.this.startActivity(intent1);
+        } else {
+            Intent intent2 = new Intent(intro.this, MainActivity.class);
+            intro.this.startActivity(intent2);
+        }
+
         this.finish();
     }
 
