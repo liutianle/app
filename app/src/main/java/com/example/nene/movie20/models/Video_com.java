@@ -44,7 +44,7 @@ public class Video_com {
 
     public static class Results{
         public int id;
-        public User User;
+        public User user;
         public String video;
         public String comment;
         public int point_love_nums;
@@ -52,20 +52,20 @@ public class Video_com {
         public String add_time;
         public Child_com child_com;
 
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
+
         public int getId() {
             return id;
         }
 
         public void setId(int id) {
             this.id = id;
-        }
-
-        public com.example.nene.movie20.models.User getUser() {
-            return User;
-        }
-
-        public void setUser(com.example.nene.movie20.models.User user) {
-            User = user;
         }
 
         public String getVideo() {

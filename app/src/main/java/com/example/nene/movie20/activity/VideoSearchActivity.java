@@ -60,8 +60,10 @@ public class VideoSearchActivity extends AppCompatActivity{
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH){
                     search_result = searchBar.getText().toString();
-                    VideoUtils.getSearchVideo(searchBar.getText().toString());
+                    Bundle bundle = new Bundle();
+                    bundle.putString("text", search_result);
                     intent = new Intent(VideoSearchActivity.this, VideoSearchResultActivity.class);
+                    intent.putExtras(bundle);
                     intent.putExtra("search_result", search_result);
                     startActivity(intent);
 
@@ -87,13 +89,17 @@ public class VideoSearchActivity extends AppCompatActivity{
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 intent = new Intent(VideoSearchActivity.this, VideoListActivity.class);
+                Bundle bundle = new Bundle();
+
                 switch (position) {
-                    case 0: VideoUtils.getKindVideo("plant"); break;
-                    case 1: VideoUtils.getKindVideo("aquaculture"); break;
-                    case 2: VideoUtils.getKindVideo("agri_and_sideline_industries"); break;
-                    case 3: VideoUtils.getKindVideo("animal"); break;
-                    case 4: VideoUtils.getKindVideo("agri_industry"); break;
+                    case 0: bundle.putString("kind", "plant");; break;
+                    case 1: bundle.putString("kind", "aquaculture"); ; break;
+                    case 2: bundle.putString("kind", "agri_and_sideline_industries"); break;
+                    case 3: bundle.putString("kind", "animal"); break;
+                    case 4: bundle.putString("kind", "agri_industry"); break;
                 }
+
+                intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
             }

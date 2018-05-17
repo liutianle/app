@@ -59,21 +59,13 @@ public class DataServer {
 
         List<MySection> list = new ArrayList<>();
         list.add(new MySection(true,"最新视频",true));
-        VideoUtils.getNewVideo();
-//        Thread.sleep(3000);
+
         for (VideoInf.ResultBean v: VideoUtils.Video) {
             //为各个数据赋值
             list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
         }
 
         list.add(new MySection(true,"最热视频",true));
-        VideoUtils.getHotVideo();
-//        Thread.sleep(3000);
-        System.out.println(VideoUtils.Video);
-        for (VideoInf.ResultBean v:VideoUtils.Video1) {
-            list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
-        }
-
         return list;
     }
 

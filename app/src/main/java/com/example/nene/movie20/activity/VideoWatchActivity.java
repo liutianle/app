@@ -28,7 +28,6 @@ import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
 import com.example.nene.movie20.data.Video;
-import com.example.nene.movie20.utils.Constant;
 import com.example.nene.movie20.utils.VideoUtils;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
@@ -114,11 +113,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         StatusBarUtil.setColor(VideoWatchActivity.this, Color.parseColor("#000000"));
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        setContentView(R.layout.watch_movie);
-        Intent intent = getIntent();
-        int videoId = intent.getIntExtra(Constant.VIDEO_ID, 1);
-        //TODO
-        VideoUtils.getVideoInf(videoId);
+        setContentView(R.layout.watch_movie);;
         iniVideo();
         initText();
         initView();

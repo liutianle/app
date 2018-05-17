@@ -43,11 +43,14 @@
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_Login"
             android:theme="@style/myApp">
+<<<<<<< HEAD
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+=======
+>>>>>>> 3f56bacf71f42ae62c0a89a868525ece3a6f6bdc
         </activity>
         <activity
             android:name=".activity.VideoReviewActivity"

@@ -17,6 +17,7 @@ import com.example.nene.movie20.R;
 public class SplashActivity extends Activity {
     boolean isFirstIn = false;
     private Intent intent;
+    public static String Token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,9 @@ public class SplashActivity extends Activity {
 
         final SharedPreferences sharedPreferences = getSharedPreferences("is_first_in_data",MODE_PRIVATE);
         isFirstIn = sharedPreferences.getBoolean("isFirstIn", true);
+
+        SharedPreferences sharedPreferences1 = getSharedPreferences("Token" , 0);
+        Token = sharedPreferences1.getString("Token", "");
 
         new Handler().postDelayed(new Runnable() {
             @Override
