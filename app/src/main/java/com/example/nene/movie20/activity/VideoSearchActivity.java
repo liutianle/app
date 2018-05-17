@@ -49,7 +49,6 @@ public class VideoSearchActivity extends AppCompatActivity{
         flowLayout = findViewById(R.id.tag);
         searchBar = findViewById(R.id.searchBar);
 
-
         initView();
         initSearch();
     }

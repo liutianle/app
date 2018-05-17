@@ -22,37 +22,37 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    compile 'com.android.support:design:27.1.0'
+    api 'com.android.support:design:27.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:support-v13:27.1.0'
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.36'
-    compile 'org.jetbrains:annotations-java5:15.0'
-    compile 'com.android.support:recyclerview-v7:27.1.0'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.36'
+    api 'org.jetbrains:annotations-java5:15.0'
+    api 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.android.support:cardview-v7:27.1.0'
     //section
-    compile 'cn.jzvd:jiaozivideoplayer:6.2.9'
+    api 'cn.jzvd:jiaozivideoplayer:6.2.9'
     //videoplayer
-    compile 'com.sackcentury:shinebutton:0.2.0'
+    api 'com.sackcentury:shinebutton:0.2.0'
     //shining bottom
-    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    api 'com.rengwuxian.materialedittext:library:2.1.4'
     //edittext
     implementation 'com.github.mancj:MaterialSearchBar:0.7.6'//searchbar
-    compile 'com.jaeger.statusbaruitl:library:1.3.5' //沉浸式布局
-    compile 'com.github.apl-devs:appintro:v4.2.0'
+    api 'com.jaeger.statusbaruitl:library:1.3.5' //沉浸式布局
+    api 'com.github.apl-devs:appintro:v4.2.0'
 //    被墙的话换个网就好了
-    compile 'com.hyman:flowlayout-lib:1.1.2' //tag
-    compile 'com.gabrielsamojlo.keyboarddismisser:keyboard-dismisser:1.3.1'
+    api 'com.hyman:flowlayout-lib:1.1.2' //tag
+    api 'com.gabrielsamojlo.keyboarddismisser:keyboard-dismisser:1.3.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'//圆形图片
-    compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    api 'com.google.code.gson:gson:2.6.2'
+    api 'com.github.bumptech.glide:glide:3.7.0'
     // Retrofit库
-    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    api 'com.squareup.okhttp3:okhttp:3.1.2'
     // Okhttp库
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    api 'com.squareup.retrofit2:converter-gson:2.1.0'
+    api 'com.google.code.gson:gson:2.6.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    compile 'com.android.support:support-v4:27.1.0'
-    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    api 'com.android.support:support-v4:27.1.0'
+    api 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
 }
