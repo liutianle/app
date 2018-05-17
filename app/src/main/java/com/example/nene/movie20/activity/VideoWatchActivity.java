@@ -1,6 +1,7 @@
 package com.example.nene.movie20.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,12 +22,15 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nene.movie20.Interface.GetVideoInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.adapter.VideoReviewAdapter;
 import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
 import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.models.Constant;
+import com.example.nene.movie20.models.VideoUrlInf;
 import com.example.nene.movie20.utils.VideoUtils;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
@@ -37,6 +41,11 @@ import java.util.List;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by nene on 2018/4/16.
@@ -53,6 +62,9 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private CommentBean commentBean;
     private ArrayList<String> addreview;
     private static Context context;
+    TextView title;
+    TextView content;
+    Intent intent;
     private String testJson = "{\n" +
             "\t\"code\": 1000,\n" +
             "\t\"message\": \"查看评论成功\",\n" +
@@ -274,17 +286,67 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initText() {
-        TextView title = findViewById(R.id.movie_title);
-        TextView content = findViewById(R.id.movie_content);
-        title.setText(VideoUtils.title);
-        content.setText(VideoUtils.disc);
+        content = findViewById(R.id.movie_content);
+        title = findViewById(R.id.movie_title);
+        Bundle bundle = intent.getExtras();
+        int video_id = bundle.getInt("video_id", -1);
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoUrlInf> call = getVideoInterface.getId(video_id);
+
+        call.enqueue(new Callback<VideoUrlInf>() {
+            @Override
+            public void onResponse(Call<VideoUrlInf> call, Response<VideoUrlInf> response) {
+                title.setText(response.body().getVideo_name());
+                content.setText(response.body().getDesc());
+            }
+
+            @Override
+            public void onFailure(Call<VideoUrlInf> call, Throwable t) {
+
+            }
+        });
+
 
     }
 
     private void iniVideo() {
-        String url = VideoUtils.Url;
-        JZVideoPlayerStandard jzVideoPlayerStandard = findViewById(R.id.video_player);
-        jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, VideoUtils.title);
+        intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        int video_id = bundle.getInt("video_id", -1);
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl) // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        final GetVideoInterface getVideoInterface = retrofit.create(GetVideoInterface.class);
+
+        //对 发送请求 进行封装
+        final Call<VideoUrlInf> call = getVideoInterface.getId(video_id);
+        call.enqueue(new Callback<VideoUrlInf>() {
+            @Override
+            public void onResponse(Call<VideoUrlInf> call, Response<VideoUrlInf> response) {
+                JZVideoPlayerStandard jzVideoPlayerStandard = findViewById(R.id.video_player);
+                jzVideoPlayerStandard.setUp(response.body().getUrl(), JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, response.body().getVideo_name());
+            }
+
+            @Override
+            public void onFailure(Call<VideoUrlInf> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
     @Override
