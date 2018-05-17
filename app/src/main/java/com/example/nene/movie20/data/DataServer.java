@@ -60,6 +60,7 @@ public class DataServer {
         List<MySection> list = new ArrayList<>();
         list.add(new MySection(true,"最新视频",true));
         VideoUtils.getNewVideo();
+//        Thread.sleep(3000);
         for (VideoInf.ResultBean v: VideoUtils.Video) {
             //为各个数据赋值
             list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
@@ -67,10 +68,29 @@ public class DataServer {
 
         list.add(new MySection(true,"最热视频",true));
         VideoUtils.getHotVideo();
-        for (VideoInf.ResultBean v:VideoUtils.Video) {
+//        Thread.sleep(3000);
+        System.out.println(VideoUtils.Video);
+        for (VideoInf.ResultBean v:VideoUtils.Video1) {
             list.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(),v.getClick_num(),v.getDesc(),v.getId())));
         }
 
         return list;
+    }
+
+    public static List<AdminSection> getAdminData(){
+        List<AdminSection> list = new ArrayList<>();
+        list.add(new AdminSection(true,"学堂",false));
+        list.add(new AdminSection(new Admin(R.drawable.admin_save, "收藏视频")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_download,"离线视频")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_file,"我的文档")));
+        list.add(new AdminSection(true,"论坛",false));
+        list.add(new AdminSection(new Admin(R.drawable.admin_question, "我的提问")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_answer, "我的回答")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_follow, "关注问题")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_comment, "收到评论")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_score, "我的积分")));
+
+        return list;
+
     }
 }

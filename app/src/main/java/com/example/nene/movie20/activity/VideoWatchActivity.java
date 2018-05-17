@@ -1,6 +1,7 @@
 package com.example.nene.movie20.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
 import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.utils.Constant;
 import com.example.nene.movie20.utils.VideoUtils;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
@@ -42,7 +44,7 @@ import cn.jzvd.JZVideoPlayerStandard;
  * Created by nene on 2018/4/16.
  */
 
-public class VideoWatchActivity extends AppCompatActivity implements View.OnClickListener{
+public class VideoWatchActivity extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView recyclerView;
     private List<CommentDetailBean> commentsList;
     private ExpandableListView expandableListView;
@@ -113,13 +115,16 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         StatusBarUtil.setColor(VideoWatchActivity.this, Color.parseColor("#000000"));
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContentView(R.layout.watch_movie);
-
+        Intent intent = getIntent();
+        int videoId = intent.getIntExtra(Constant.VIDEO_ID, 1);
+        //TODO
+        VideoUtils.getVideoInf(videoId);
         iniVideo();
         initText();
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         commentsList = generateTestData();
         expandableListView = findViewById(R.id.review_list);
         bt_commont = findViewById(R.id.input);
@@ -140,14 +145,14 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         videoReviewAdapter = new VideoReviewAdapter(this, commentList);
         expandableListView.setAdapter(videoReviewAdapter);
 
-        for (int i = 0; i < commentList.size(); i++){
+        for (int i = 0; i < commentList.size(); i++) {
             expandableListView.expandGroup(i);
         }
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 boolean isExpanded = expandableListView.isGroupExpanded(groupPosition);
-                Log.e(TAG, "onGroupClick: 当前的评论id>>>"+ commentList.get(groupPosition).getId());
+                Log.e(TAG, "onGroupClick: 当前的评论id>>>" + commentList.get(groupPosition).getId());
                 expandableListView.expandGroup(groupPosition, false);
                 showReplyDialog(groupPosition);
                 return true;
@@ -156,7 +161,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                Toast.makeText(VideoWatchActivity.this,"点击了回复",Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoWatchActivity.this, "点击了回复", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -170,14 +175,14 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onClick(View view){
-        if (view.getId() == R.id.input){
+    public void onClick(View view) {
+        if (view.getId() == R.id.input) {
             showCommentDialog();
         }
 
     }
 
-    private void showCommentDialog(){
+    private void showCommentDialog() {
         dialog = new BottomSheetDialog(this);
         View commentView = LayoutInflater.from(this).inflate(R.layout.review_dialog, null);
         final EditText commentText = (EditText) commentView.findViewById(R.id.dialog_comment_et);
@@ -186,23 +191,23 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
         View parent = (View) commentView.getParent();
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parent);
-        commentView.measure(0,0);
+        commentView.measure(0, 0);
         behavior.setPeekHeight(commentView.getMeasuredHeight());
 
         bt_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String commentContent = commentText.getText().toString().trim();
-                if(!TextUtils.isEmpty(commentContent)){
+                if (!TextUtils.isEmpty(commentContent)) {
 
                     //commentOnWork(commentContent);
                     dialog.dismiss();
-                    CommentDetailBean detailBean = new CommentDetailBean("小明","http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png",commentContent,"刚刚");
+                    CommentDetailBean detailBean = new CommentDetailBean("小明", "http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png", commentContent, "刚刚");
                     videoReviewAdapter.addTheCommentData(detailBean);
-                    Toast.makeText(VideoWatchActivity.this,"评论成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoWatchActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
 
-                }else {
-                    Toast.makeText(VideoWatchActivity.this,"评论内容不能为空",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(VideoWatchActivity.this, "评论内容不能为空", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -214,9 +219,9 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(!TextUtils.isEmpty(charSequence) && charSequence.length()>2){
+                if (!TextUtils.isEmpty(charSequence) && charSequence.length() > 2) {
                     bt_comment.setBackgroundColor(Color.parseColor("#FFB568"));
-                }else {
+                } else {
                     bt_comment.setBackgroundColor(Color.parseColor("#D8D8D8"));
                 }
             }
@@ -240,13 +245,13 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View view) {
                 String replyContent = commentText.getText().toString().trim();
-                if (!TextUtils.isEmpty(replyContent)){
+                if (!TextUtils.isEmpty(replyContent)) {
                     dialog.dismiss();
                     ReplyDetailBean replyDetailBean = new ReplyDetailBean("小红", replyContent);
                     videoReviewAdapter.addTheReplyData(replyDetailBean, position);
-                    Toast.makeText(VideoWatchActivity.this,"回复成功",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(VideoWatchActivity.this,"回复内容不能为空",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoWatchActivity.this, "回复成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(VideoWatchActivity.this, "回复内容不能为空", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -258,9 +263,9 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(!TextUtils.isEmpty(charSequence) && charSequence.length()>2){
+                if (!TextUtils.isEmpty(charSequence) && charSequence.length() > 2) {
                     bt_comment.setBackgroundColor(Color.parseColor("#FFB568"));
-                }else {
+                } else {
                     bt_comment.setBackgroundColor(Color.parseColor("#D8D8D8"));
                 }
             }
@@ -284,12 +289,12 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private void iniVideo() {
         String url = VideoUtils.Url;
         JZVideoPlayerStandard jzVideoPlayerStandard = findViewById(R.id.video_player);
-        jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, VideoUtils.title);
+//        jzVideoPlayerStandard.setUp(url, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, VideoUtils.title);
     }
 
     @Override
     public void onBackPressed() {
-        if(JZVideoPlayer.backPress()) {
+        if (JZVideoPlayer.backPress()) {
             return;
         }
         super.onBackPressed();

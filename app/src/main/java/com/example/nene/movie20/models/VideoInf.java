@@ -100,5 +100,4 @@ public class VideoInf {
             this.video_kind = video_kind;
         }
     }
-
 }

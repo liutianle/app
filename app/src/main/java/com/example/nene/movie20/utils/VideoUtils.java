@@ -9,6 +9,7 @@ import com.example.nene.movie20.models.VideoUrlInf;
 import com.example.nene.movie20.models.Video_com;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,8 +26,10 @@ public class VideoUtils {
     public static String Url;
     public static String title;
     public static String disc;
+    public static String click_num;
 
     public static List<VideoInf.ResultBean> Video;
+    public static List<VideoInf.ResultBean> Video1;
 
     public static void getVideoInf(int id){
         //步骤4:创建Retrofit对象
@@ -50,6 +53,8 @@ public class VideoUtils {
                     Url = response.body().getUrl();
                     title=response.body().getVideo_name();
                     disc=response.body().getDesc();
+                    click_num = response.body().getClick_num();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,7 +89,9 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoInf> response = call.execute();
-                    Video = response.body().getResults();
+                    Video = new ArrayList<VideoInf.ResultBean>();
+                    Video.addAll(response.body().getResults());
+                    System.out.println("test1");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -155,7 +162,8 @@ public class VideoUtils {
             public void run() {
                 try {
                     Response<VideoInf> response = call.execute();
-                    Video = response.body().getResults();
+                    Video1 = response.body().getResults();
+                    System.out.println("hot");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
