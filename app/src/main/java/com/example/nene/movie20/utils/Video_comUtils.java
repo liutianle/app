@@ -2,6 +2,7 @@ package com.example.nene.movie20.utils;
 
 import com.example.nene.movie20.Interface.Video_comInterface;
 import com.example.nene.movie20.activity.SplashActivity;
+import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.Video_com;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.activity.SplashActivity;
+import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
 
 import retrofit2.Call;

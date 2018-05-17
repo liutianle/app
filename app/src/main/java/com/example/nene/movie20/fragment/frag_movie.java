@@ -40,9 +40,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class frag_movie extends Fragment {
     private static frag_movie instance = null;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerView2;
     private ViewPager viewPager;
     private List<MySection> mData;
+    private List<MySection> mData1;
     private VideoSectionAdapter movieSectionAdapter;
+    private VideoSectionAdapter movieSectionAdapter2;
 
     public static Fragment newInstance() {
         if (instance == null) {
@@ -91,11 +94,12 @@ public class frag_movie extends Fragment {
         call1.enqueue(new Callback<VideoInf>() {
             @Override
             public void onResponse(Call<VideoInf> call, Response<VideoInf> response) {
-                mData.add(new MySection(true,"最热视频",true));
+                mData1=new ArrayList<>();
+                mData1.add(new MySection(true,"最热视频",true));
                 for (VideoInf.ResultBean v : response.body().getResults()) {
-                    mData.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(), v.getClick_num(), v.getDesc(), v.getId())));
+                    mData1.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(), v.getClick_num(), v.getDesc(), v.getId())));
                 }
-                movieSectionAdapter.setNewData(mData);
+                movieSectionAdapter2.setNewData(mData1);
             }
 
             @Override
@@ -112,8 +116,11 @@ public class frag_movie extends Fragment {
         LinearLayout linearLayout = view.findViewById(R.id.movie_search);
 
         recyclerView = view.findViewById(R.id.rv_list);
+        recyclerView2 = view.findViewById(R.id.rv_list2);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView2.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         movieSectionAdapter = new VideoSectionAdapter(R.layout.content_video, R.layout.def_movie_section_head, new ArrayList<MySection>());
+        movieSectionAdapter2 = new VideoSectionAdapter(R.layout.content_video, R.layout.def_movie_section_head, new ArrayList<MySection>());
         mData = new ArrayList<>();
 
 
@@ -143,7 +150,34 @@ public class frag_movie extends Fragment {
                 }
             }
         });
+        movieSectionAdapter2.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+                MySection section = mData.get(position);
+                if (section.isMore()) {
+
+                } else {
+                    Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("video_id", mData.get(position).t.getId());
+                    intent.putExtras(bundle);
+                    //刷新页面d
+                    startActivity(intent);
+                }
+            }
+        });
         movieSectionAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(getActivity(), VideoListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("kind", String.valueOf(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        movieSectionAdapter2.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(getActivity(), VideoListActivity.class);
@@ -155,6 +189,7 @@ public class frag_movie extends Fragment {
         });
 
         recyclerView.setAdapter(movieSectionAdapter);
+        recyclerView2.setAdapter(movieSectionAdapter2);
         return view;
     }
 }
