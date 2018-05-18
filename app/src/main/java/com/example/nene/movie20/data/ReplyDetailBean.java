@@ -8,10 +8,20 @@ public class ReplyDetailBean {
     private String nickName;
     private String userLogo;
     private int id;
-    private String commentId;
+    private int commentId;
     private String content;
     private String status;
     private String createDate;
+
+    public ReplyDetailBean(String nickName, String userLogo, int id, int commentId, String content, String status, String createDate) {
+        this.nickName = nickName;
+        this.userLogo = userLogo;
+        this.id = id;
+        this.commentId = commentId;
+        this.content = content;
+        this.status = status;
+        this.createDate = createDate;
+    }
 
     public ReplyDetailBean(String nickName, String content) {
         this.nickName = nickName;
@@ -39,10 +49,10 @@ public class ReplyDetailBean {
         return id;
     }
 
-    public void setCommentId(String commentId) {
+    public void setCommentId(int commentId) {
         this.commentId = commentId;
     }
-    public String getCommentId() {
+    public int getCommentId() {
         return commentId;
     }
 

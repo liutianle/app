@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.Interface.GetVideoInterface;
+import com.example.nene.movie20.Interface.Video_comInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.adapter.VideoReviewAdapter;
 import com.example.nene.movie20.data.CommentBean;
@@ -31,6 +32,7 @@ import com.example.nene.movie20.data.ReplyDetailBean;
 import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.VideoUrlInf;
+import com.example.nene.movie20.models.Video_com;
 import com.example.nene.movie20.utils.VideoUtils;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
@@ -39,6 +41,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.CommonDataSource;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
@@ -55,6 +59,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VideoWatchActivity extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView recyclerView;
     private List<CommentDetailBean> commentsList;
+    private List<ReplyDetailBean> replyDetailBeans;
     private ExpandableListView expandableListView;
     private TextView bt_commont;
     private VideoReviewAdapter videoReviewAdapter;
@@ -132,10 +137,11 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
     private void initView() {
         commentsList = generateTestData();
+
         expandableListView = findViewById(R.id.review_list);
         bt_commont = findViewById(R.id.input);
         bt_commont.setOnClickListener(this);
-        initExpandableListView(commentsList);
+        initExpandableListView();
     }
 
     private List<CommentDetailBean> generateTestData() {
@@ -146,19 +152,51 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void initExpandableListView(final List<CommentDetailBean> commentList) {
+    private void initExpandableListView() {
         expandableListView.setGroupIndicator(null);
-        videoReviewAdapter = new VideoReviewAdapter(this, commentList);
-        expandableListView.setAdapter(videoReviewAdapter);
+        commentsList = new ArrayList<>();
+        replyDetailBeans = new ArrayList<>();
+        intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        int id = bundle.getInt("video_id", -1);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
+        String a = "JWT " + SplashActivity.Token;
+        Call<Video_com> call = video_comInterface.getVideoId(a,id);
+        call.enqueue(new Callback<Video_com>() {
+            @Override
+            public void onResponse(Call<Video_com> call, Response<Video_com> response) {
+                Video_com video_com = response.body();
+                for(Video_com.Results v: response.body().getResults()) {
+                    for (Video_com.Results.Child_com c: v.child_com) {
+                        replyDetailBeans.add(new ReplyDetailBean(c.from_uid.user_profile.nick_name,c.from_uid.user_profile.image,c.from_uid.id,c.comment_id,c.comment,c.comment,c.add_time));
+                    }
+                    commentsList.add(new CommentDetailBean(v.id,v.user.user_profile.nick_name,v.user.user_profile.image,v.comment,v.comment,v.child_com.size(),v.add_time,replyDetailBeans));
+                    replyDetailBeans.clear();
+                    expandableListView.setAdapter(videoReviewAdapter);
+                }
+                System.out.println(video_com);
+            }
 
-        for (int i = 0; i < commentList.size(); i++) {
+            @Override
+            public void onFailure(Call<Video_com> call, Throwable t) {
+                System.out.println(t);
+            }
+        });
+        videoReviewAdapter = new VideoReviewAdapter(this, commentsList);
+
+
+        for (int i = 0; i < commentsList.size(); i++) {
             expandableListView.expandGroup(i);
         }
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 boolean isExpanded = expandableListView.isGroupExpanded(groupPosition);
-                Log.e(TAG, "onGroupClick: 当前的评论id>>>" + commentList.get(groupPosition).getId());
+                Log.e(TAG, "onGroupClick: 当前的评论id>>>" + commentsList.get(groupPosition).getId());
                 expandableListView.expandGroup(groupPosition, false);
                 showReplyDialog(groupPosition);
                 return true;
