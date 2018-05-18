@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -45,6 +46,7 @@ public class UserFragment extends Fragment {
     }
 
     private void initView() {
+        ImageView imageView = view.findViewById(R.id.)
         adminSectionAdapter = new AdminSectionAdapter(R.layout.admin_item, R.layout.admin_head, data);
 
         adminSectionAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
