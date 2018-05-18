@@ -24,8 +24,6 @@ import com.example.nene.movie20.data.MySection;
 import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.VideoInf;
-import com.example.nene.movie20.utils.MyGridLayoutManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +111,7 @@ public class frag_movie extends Fragment {
     }
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.frag_movie, container, false);
 
         LinearLayout linearLayout = view.findViewById(R.id.movie_search);

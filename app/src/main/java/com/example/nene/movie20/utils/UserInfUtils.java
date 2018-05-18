@@ -23,6 +23,5 @@ public class UserInfUtils {
         final UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
         System.out.println(SplashActivity.Token);
         final Call<User> call = userInfInterface.getinformation("JWT "+ SplashActivity.Token, "1");
-
     }
 }

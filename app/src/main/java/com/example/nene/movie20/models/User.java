@@ -5,10 +5,10 @@ package com.example.nene.movie20.models;
  */
 
 public class User {
-    private int id;
-    private String mobile;
-    private String row_id;
-    private User_profile user_profile;
+    public int id;
+    public String mobile;
+    public String row_id;
+    public User_profile user_profile;
 
     public int getId() {
         return id;

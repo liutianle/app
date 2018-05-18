@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,31 +24,23 @@ public class Video_comUtils {
                 .baseUrl(Constant.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        final Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
+        Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
         String a = "JWT " + SplashActivity.Token;
-
-
-        final Call<Video_com.Results> call = video_comInterface.getVideoId(a,id);
-
-        System.out.println(a);
-
-        Thread thread = new Thread(new Runnable() {
+        Call<Video_com> call = video_comInterface.getVideoId(a,id);
+        call.enqueue(new Callback<Video_com>() {
             @Override
-            public void run() {
-                try {
-                    Response<Video_com.Results> response = call.execute();
-                    System.out.println("111111111:"+response.body().toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            public void onResponse(Call<Video_com> call, Response<Video_com> response) {
+                Video_com video_com = response.body();
+                System.out.println(video_com);
+            }
+
+            @Override
+            public void onFailure(Call<Video_com> call, Throwable t) {
+                System.out.println(t);
             }
         });
 
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println(a);
+
     }
 }

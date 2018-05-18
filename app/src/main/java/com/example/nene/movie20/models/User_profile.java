@@ -5,11 +5,11 @@ package com.example.nene.movie20.models;
  */
 
 public class User_profile {
-    private String image;
-    private String birth;
-    private String sex;
-    private String address;
-    private String nick_name;
+    public String image;
+    public String birth;
+    public String sex;
+    public String address;
+    public String nick_name;
 
     public String getImage() {
         return image;
