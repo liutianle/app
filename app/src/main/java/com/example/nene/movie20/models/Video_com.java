@@ -1,5 +1,7 @@
 package com.example.nene.movie20.models;
 
+import java.util.List;
+
 /**
  * Created by sam- on 2018/5/9.
  */
@@ -8,7 +10,7 @@ public class Video_com {
     private int count;
     private String next;
     private String previous;
-    private Results results;
+    private List<Results> results;
 
     public int getCount() {
         return count;
@@ -34,12 +36,12 @@ public class Video_com {
         this.previous = previous;
     }
 
-    public Results getResults() {
+    public List<Results> getResults() {
         return results;
     }
 
     public void setResults(Results results) {
-        this.results = results;
+        this.results = (List<Results>) results;
     }
 
     public static class Results{
@@ -50,7 +52,7 @@ public class Video_com {
         public int point_love_nums;
         public boolean is_love;
         public String add_time;
-        public Child_com child_com;
+        public List<Child_com> child_com;
 
         public User getUser() {
             return user;
@@ -109,11 +111,11 @@ public class Video_com {
         }
 
         public Child_com getChild_com() {
-            return child_com;
+            return (Child_com) child_com;
         }
 
         public void setChild_com(Child_com child_com) {
-            this.child_com = child_com;
+            this.child_com = (List<Child_com>) child_com;
         }
 
         public static class Child_com{

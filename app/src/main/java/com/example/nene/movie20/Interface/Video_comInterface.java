@@ -18,6 +18,6 @@ public interface Video_comInterface {
                             @Query("page_size") String page_size);
 
     @GET("video_com/{id}")
-    Call<Video_com.Results> getVideoId(@Header("Authorization") String token, @Path("id") int id);
+    Call<Video_com> getVideoId(@Header("Authorization") String token, @Path("id") int id);
 
 }
