@@ -50,10 +50,6 @@
             android:theme="@style/myApp">
         </activity>
         <activity
-            android:name=".activity.VideoReviewActivity"
-            android:label="@string/title_activity_intro"
-            android:theme="@style/myApp" />
-        <activity
             android:name=".activity.VideoListActivity"
             android:label="@string/title_activity_video_list"
             android:theme="@style/myApp" />

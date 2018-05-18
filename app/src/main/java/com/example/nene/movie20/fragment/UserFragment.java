@@ -1,5 +1,6 @@
 package com.example.nene.movie20.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.nene.movie20.R;
+import com.example.nene.movie20.activity.AdminSettingActivity;
 import com.example.nene.movie20.adapter.AdminSectionAdapter;
 import com.example.nene.movie20.data.AdminSection;
 import com.example.nene.movie20.data.DataServer;
@@ -28,6 +30,7 @@ public class UserFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<AdminSection> data = DataServer.getAdminData();
     private AdminSectionAdapter adminSectionAdapter;
+    private Intent intent;
 
     public static Fragment newInstance() {
         if (instance == null){
@@ -42,11 +45,22 @@ public class UserFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
         initView();
+        initClick();
         return view;
     }
 
+    private void initClick() {
+        ImageView setting = view.findViewById(R.id.setting);
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(getActivity(), AdminSettingActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void initView() {
-        ImageView imageView = view.findViewById(R.id.)
         adminSectionAdapter = new AdminSectionAdapter(R.layout.admin_item, R.layout.admin_head, data);
 
         adminSectionAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {

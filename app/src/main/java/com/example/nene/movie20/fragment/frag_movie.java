@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.example.nene.movie20.data.MySection;
 import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.VideoInf;
+import com.example.nene.movie20.utils.MyGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,14 +117,20 @@ public class frag_movie extends Fragment {
 
         LinearLayout linearLayout = view.findViewById(R.id.movie_search);
 
+//        MyGridLayoutManager recyclerViewLayoutManger = new MyGridLayoutManager(getContext(), 2);
+//        recyclerViewLayoutManger.setScrollEnabled(false);
+//        MyGridLayoutManager recyclerViewLayoutManger2 = new MyGridLayoutManager(getContext(), 2);
+//        recyclerViewLayoutManger.setScrollEnabled(false);
+//        recyclerViewLayoutManger2.setScrollEnabled(false);
         recyclerView = view.findViewById(R.id.rv_list);
         recyclerView2 = view.findViewById(R.id.rv_list2);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView2.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        recyclerView2.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView2.setNestedScrollingEnabled(false);
         movieSectionAdapter = new VideoSectionAdapter(R.layout.content_video, R.layout.def_movie_section_head, new ArrayList<MySection>());
         movieSectionAdapter2 = new VideoSectionAdapter(R.layout.content_video, R.layout.def_movie_section_head, new ArrayList<MySection>());
         mData = new ArrayList<>();
-
 
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,30 +145,26 @@ public class frag_movie extends Fragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-                MySection section = mData.get(position);
-                if (section.isMore()) {
-
-                } else {
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("video_id", mData.get(position).t.getId());
                     intent.putExtras(bundle);
                     //刷新页面d
                     startActivity(intent);
-                }
+
             }
         });
         movieSectionAdapter2.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-                MySection section = mData.get(position);
+                MySection section = mData1.get(position);
                 if (section.isMore()) {
 
                 } else {
                     Intent intent = new Intent(getActivity(), VideoWatchActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("video_id", mData.get(position).t.getId());
+                    bundle.putInt("video_id", mData1.get(position).t.getId());
                     intent.putExtras(bundle);
                     //刷新页面d
                     startActivity(intent);
