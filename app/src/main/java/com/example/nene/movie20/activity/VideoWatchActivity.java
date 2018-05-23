@@ -2,6 +2,7 @@ package com.example.nene.movie20.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -164,7 +165,8 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
-        String a = "JWT " + SplashActivity.Token;
+        SharedPreferences sharedPreferences = getSharedPreferences("Token" , 0);
+        String a = "JWT " + sharedPreferences.getString("Token", "");
         Call<Video_com> call = video_comInterface.getVideoId(a,id);
         call.enqueue(new Callback<Video_com>() {
             @Override

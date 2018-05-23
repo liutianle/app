@@ -24,11 +24,12 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        final SharedPreferences sharedPreferences = getSharedPreferences("is_first_in_data",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("is_first_in_data",MODE_PRIVATE);
         isFirstIn = sharedPreferences.getBoolean("isFirstIn", true);
 
         SharedPreferences sharedPreferences1 = getSharedPreferences("Token" , 0);
         Token = sharedPreferences1.getString("Token", "");
+        System.out.println(Token);
 
         new Handler().postDelayed(new Runnable() {
             @Override
