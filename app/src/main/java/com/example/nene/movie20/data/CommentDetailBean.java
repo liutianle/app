@@ -11,17 +11,17 @@ public class CommentDetailBean {
     private String nickName;
     private String userLogo;
     private String content;
-    private String imgId;
+    private int userId;
     private int replyTotal;
     private String createDate;
     private List<ReplyDetailBean> replyList;
 
-    public CommentDetailBean(int id, String nickName, String userLogo, String content, String imgId, int replyTotal, String createDate, List<ReplyDetailBean> replyList) {
+    public CommentDetailBean(int id, String nickName, String userLogo, String content, int userId, int replyTotal, String createDate, List<ReplyDetailBean> replyList) {
         this.id = id;
         this.nickName = nickName;
         this.userLogo = userLogo;
         this.content = content;
-        this.imgId = imgId;
+        this.userId = userId;
         this.replyTotal = replyTotal;
         this.createDate = createDate;
         this.replyList = replyList;
@@ -62,11 +62,11 @@ public class CommentDetailBean {
         return content;
     }
 
-    public void setImgId(String imgId) {
-        this.imgId = imgId;
+    public void setUserId(int imgId) {
+        this.userId = userId;
     }
-    public String getImgId() {
-        return imgId;
+    public int getUserId() {
+        return userId;
     }
 
     public void setCreateDate(String createDate) {
