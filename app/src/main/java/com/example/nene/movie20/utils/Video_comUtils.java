@@ -4,6 +4,7 @@ import com.example.nene.movie20.Interface.Video_comInterface;
 import com.example.nene.movie20.activity.SplashActivity;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.Video_com;
+import com.example.nene.movie20.models.Video_comCreate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -41,6 +42,28 @@ public class Video_comUtils {
         });
 
         System.out.println(a);
+
+    }
+
+    public static void createVideo_com(int video, String comment) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
+        String a = "JWT " + SplashActivity.Token;
+        Call<Video_comCreate> call = video_comInterface.getComment(a,video,comment);
+        call.enqueue(new Callback<Video_comCreate>() {
+            @Override
+            public void onResponse(Call<Video_comCreate> call, Response<Video_comCreate> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Video_comCreate> call, Throwable t) {
+
+            }
+        });
 
     }
 }

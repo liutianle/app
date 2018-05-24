@@ -16,6 +16,6 @@ import retrofit2.http.Path;
  * Created by sam- on 2018/4/24.
  */
 public interface UserInfInterface {
-    @GET("read/{id}/")
+    @GET("user/{id}/")
     Call<User> getinformation(@Header("Authorization") String token, @Path("id") String id);
 }

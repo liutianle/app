@@ -8,6 +8,8 @@ import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -22,6 +24,18 @@ public class UserInfUtils {
 
         final UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
         System.out.println(SplashActivity.Token);
+
         final Call<User> call = userInfInterface.getinformation("JWT "+ SplashActivity.Token, "1");
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
     }
 }

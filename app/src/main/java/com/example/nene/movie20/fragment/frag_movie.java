@@ -2,6 +2,9 @@ package com.example.nene.movie20.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -51,6 +54,8 @@ public class frag_movie extends Fragment {
     private VideoSectionAdapter movieSectionAdapter;
     private VideoSectionAdapter movieSectionAdapter2;
 
+
+
     public static Fragment newInstance() {
         if (instance == null) {
             instance = new frag_movie();
@@ -60,7 +65,6 @@ public class frag_movie extends Fragment {
 
     public frag_movie() {
     }
-
 
     @Override
     public void onResume() {
@@ -85,7 +89,7 @@ public class frag_movie extends Fragment {
                 mData.add(new MySection(true,"最新视频",true));
                 for (VideoInf.ResultBean v : response.body().getResults()) {
                     mData.add(new MySection(new Video(v.getVideo_img(), v.getVideo_name(), v.getClick_num(), v.getDesc(), v.getId())));
-                }
+            }
                 movieSectionAdapter.setNewData(mData);
             }
 
