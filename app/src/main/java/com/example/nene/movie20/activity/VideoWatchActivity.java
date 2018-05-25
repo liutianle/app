@@ -111,7 +111,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                     for (Video_com.Results.Child_com c : v.child_com) {
                         replyDetailBeans.add(new ReplyDetailBean(c.from_uid.user_profile.nick_name, c.from_uid.user_profile.image, c.from_uid.id, c.comment_id, c.comment, c.comment, c.add_time));
                     }
-                    commentsList.add(new CommentDetailBean(v.id, v.user.user_profile.nick_name, v.user.user_profile.image, v.comment, v.user.id, v.child_com.size(), v.add_time, replyDetailBeans));
+                    commentsList.add(new CommentDetailBean(v.id, v.user.user_profile.nick_name, v.user.user_profile.image, v.comment, v.user.id, v.child_com.size(), v.add_time, v.is_love, v.point_love_nums, replyDetailBeans));
                 }
                 Collections.reverse(commentsList);
                 Message msg = new Message();
