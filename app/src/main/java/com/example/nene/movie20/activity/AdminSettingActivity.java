@@ -77,9 +77,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -163,7 +161,7 @@ public class AdminSettingActivity extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
+
         imageView = findViewById(R.id.user_img);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,8 +173,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         initView();
         initTime();
         initSex();
-=======
->>>>>>> e3e81e427b42646550a017abd34b3abf21244cdf
+
     }
 
     private void showPopueWindow() {
@@ -604,16 +601,16 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Token", 0);
 
-        Call<User> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", "") , user_profile);
+        retrofit2.Call<User> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", "") , user_profile);
 
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
 
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(retrofit2.Call<User> call, Throwable t) {
 
             }
         });
@@ -627,10 +624,10 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("Token", 0);
         UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
-        Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
+        retrofit2.Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
                 admin_birth = findViewById(R.id.admin_birth);
                 admin_birth.setText(response.body().getUser_profile().getBirth());
                 admin_nickname = findViewById(R.id.admin_nickname);
@@ -648,7 +645,7 @@ public class AdminSettingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(retrofit2.Call<User> call, Throwable t) {
 
             }
         });
