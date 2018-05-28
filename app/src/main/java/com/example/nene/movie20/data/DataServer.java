@@ -85,4 +85,16 @@ public class DataServer {
         return list;
 
     }
+
+    public static List<Exam> getExamData(){
+        List<Exam> list = new ArrayList<>();
+        list.add(new Exam(R.drawable.exam_zonghe, "综合测试","22","50"));
+        list.add(new Exam(R.drawable.exam_zhongzhi, "种植业", "12", "45"));
+        list.add(new Exam(R.drawable.exam_shuichan, "水产业", "12", "45"));
+        list.add(new Exam(R.drawable.user_logo, "畜牧业", "12", "45"));
+        list.add(new Exam(R.drawable.exam_nongfu, "农副业", "12", "45"));
+        list.add(new Exam(R.drawable.exam_nongzi, "农资业", "12", "24"));
+
+        return list;
+    }
 }

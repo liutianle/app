@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,8 +71,11 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<String> addreview;
     private static Context context;
     private Intent intent;
-    TextView content;
-    TextView title;
+    private TextView content;
+    private TextView title;
+    private ImageView like;
+    boolean isLike = false;
+
     private String testJson = "{\n" +
             "\t\"code\": 1000,\n" +
             "\t\"message\": \"查看评论成功\",\n" +
@@ -134,6 +138,25 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.watch_movie);
         iniVideo();
         initView();
+        initLike();
+    }
+
+    private void initLike() {
+        like = findViewById(R.id.video_like);
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isLike){
+                    isLike = false;
+                    like.setColorFilter(Color.parseColor("#aaaaaa"));
+                }else {
+                    isLike = true;
+                    like.setColorFilter(Color.parseColor("#FF5C5C"));
+
+                }
+
+            }
+        });
     }
 
     private void initView() {
