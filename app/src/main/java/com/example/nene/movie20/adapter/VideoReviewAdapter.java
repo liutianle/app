@@ -1,6 +1,7 @@
 package com.example.nene.movie20.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
@@ -15,14 +16,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.nene.movie20.Interface.PointInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
+import com.example.nene.movie20.models.Constant;
+import com.example.nene.movie20.models.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by nene on 2018/4/18.
@@ -32,6 +41,7 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
     private List<CommentDetailBean> commentDetailBeans;
     private List<ReplyDetailBean> replyDetailBeans;
     private Context context;
+    private int num;
     private static final String TAG = "CommentExpandAdapter";
 
     public VideoReviewAdapter(Context context, List<CommentDetailBean> commentDetailBeans){
@@ -81,7 +91,7 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
     boolean isLike = false;
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpand, View convertView, ViewGroup viewGroup) {
+    public View getGroupView(final int groupPosition, boolean isExpand, View convertView, ViewGroup viewGroup) {
         final GroupHolder groupHolder;
 
         if (convertView == null){
@@ -99,15 +109,27 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
         groupHolder.tv_name.setText(commentDetailBeans.get(groupPosition).getNickName());
         groupHolder.tv_time.setText(commentDetailBeans.get(groupPosition).getCreateDate());
         groupHolder.tv_content.setText(commentDetailBeans.get(groupPosition).getContent());
+        groupHolder.tv_num.setText(String.valueOf(commentDetailBeans.get(groupPosition).getLove_num()));
+        if(commentDetailBeans.get(groupPosition).getIs_love()) {
+            groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
+            isLike = commentDetailBeans.get(groupPosition).getIs_love();
+            num = commentDetailBeans.get(groupPosition).getLove_num();
+
+        }
+
         groupHolder.iv_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLike){
-                    isLike = false;
-                    groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
-                }else {
+                if(!isLike){
                     isLike = true;
                     groupHolder.iv_like.setColorFilter(Color.parseColor("#FF5C5C"));
+                    point(commentDetailBeans.get(groupPosition).getId());
+                    groupHolder.tv_num.setText(String.valueOf(++num));
+                }else {
+                    groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
+                    isLike = false;
+                    point(commentDetailBeans.get(groupPosition).getId());
+                    groupHolder.tv_num.setText(String.valueOf(--num));
                 }
             }
         });
@@ -145,7 +167,7 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
 
     private class GroupHolder{
         private CircleImageView logo;
-        private TextView tv_name, tv_content, tv_time;
+        private TextView tv_name, tv_content, tv_time, tv_num;
         private ImageView iv_like;
         public GroupHolder(View view) {
             logo =  view.findViewById(R.id.comment_item_logo);
@@ -153,6 +175,7 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
             tv_name = view.findViewById(R.id.comment_item_userName);
             tv_time = view.findViewById(R.id.comment_item_time);
             iv_like = view.findViewById(R.id.comment_item_like);
+            tv_num = view.findViewById(R.id.review_like_number);
         }
 
     }
@@ -205,6 +228,29 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
 
         notifyDataSetChanged();
 
+    }
+
+    public void point(int commit_id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PointInterface pointInterface = retrofit.create(PointInterface.class);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Token", 0);
+        String a = sharedPreferences.getString("Token" , "");
+        Call<Point> call = pointInterface.getCommentId("JWT " + sharedPreferences.getString("Token", ""), commit_id,1);
+        call.enqueue(new Callback<Point>() {
+            @Override
+            public void onResponse(Call<Point> call, Response<Point> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Point> call, Throwable t) {
+
+            }
+        });
     }
 
 }

@@ -11,19 +11,41 @@ public class CommentDetailBean {
     private String nickName;
     private String userLogo;
     private String content;
-    private String imgId;
+    private int userId;
     private int replyTotal;
     private String createDate;
+    private Boolean is_love;
+
+    public int getLove_num() {
+        return love_num;
+    }
+
+    public void setLove_num(int love_num) {
+        this.love_num = love_num;
+    }
+
+    private int love_num;
     private List<ReplyDetailBean> replyList;
 
-    public CommentDetailBean(int id, String nickName, String userLogo, String content, String imgId, int replyTotal, String createDate, List<ReplyDetailBean> replyList) {
+    public Boolean getIs_love() {
+        return is_love;
+    }
+
+    public void setIs_love(Boolean is_love) {
+        this.is_love = is_love;
+    }
+
+
+    public CommentDetailBean(int id, String nickName, String userLogo, String content, int userId, int replyTotal, String createDate, boolean is_love, int love_num, List<ReplyDetailBean> replyList) {
         this.id = id;
         this.nickName = nickName;
         this.userLogo = userLogo;
         this.content = content;
-        this.imgId = imgId;
+        this.userId = userId;
         this.replyTotal = replyTotal;
         this.createDate = createDate;
+        this.is_love = is_love;
+        this.love_num = love_num;
         this.replyList = replyList;
     }
 
@@ -62,11 +84,11 @@ public class CommentDetailBean {
         return content;
     }
 
-    public void setImgId(String imgId) {
-        this.imgId = imgId;
+    public void setUserId(int imgId) {
+        this.userId = userId;
     }
-    public String getImgId() {
-        return imgId;
+    public int getUserId() {
+        return userId;
     }
 
     public void setCreateDate(String createDate) {

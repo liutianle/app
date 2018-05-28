@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -13,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,29 +26,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.Interface.GetVideoInterface;
+import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.Interface.Video_comInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.adapter.VideoReviewAdapter;
 import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.data.CommentDetailBean;
 import com.example.nene.movie20.data.ReplyDetailBean;
-import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
+import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.VideoUrlInf;
+import com.example.nene.movie20.models.Video_Reply;
 import com.example.nene.movie20.models.Video_com;
-import com.example.nene.movie20.utils.VideoUtils;
+import com.example.nene.movie20.models.Video_comCreate;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
-import javax.sql.CommonDataSource;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +65,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class VideoWatchActivity extends AppCompatActivity implements View.OnClickListener {
+    private final int GET_COMMENTlIST = 1;
     private RecyclerView recyclerView;
     private List<CommentDetailBean> commentsList;
     private List<ReplyDetailBean> replyDetailBeans;
@@ -69,12 +76,11 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private BottomSheetDialog dialog;
     private CommentBean commentBean;
     private ArrayList<String> addreview;
-    private static Context context;
     private Intent intent;
     private TextView content;
     private TextView title;
     private ImageView like;
-    boolean isLike = false;
+    boolean isSave = false;
 
     private String testJson = "{\n" +
             "\t\"code\": 1000,\n" +
@@ -129,6 +135,13 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             "\t\t]\n" +
             "\t}\n" +
             "}";
+    private String commentContent;
+    private SharedPreferences sharedPreferences;
+    private String replyContent;
+    private ReplyDetailBean replyDetailBean;
+    private Handler handler;
+    private TextView content;
+    private TextView title;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,6 +149,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         StatusBarUtil.setColor(VideoWatchActivity.this, Color.parseColor("#000000"));
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContentView(R.layout.watch_movie);
+
         iniVideo();
         initView();
         initLike();
@@ -188,30 +202,59 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
-        SharedPreferences sharedPreferences = getSharedPreferences("Token" , 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("Token", 0);
         String a = "JWT " + sharedPreferences.getString("Token", "");
-        Call<Video_com> call = video_comInterface.getVideoId(a,id);
+        Call<Video_com> call = video_comInterface.getVideoId(a, id);
         call.enqueue(new Callback<Video_com>() {
             @Override
             public void onResponse(Call<Video_com> call, Response<Video_com> response) {
-                Video_com video_com = response.body();
-                for(Video_com.Results v: response.body().getResults()) {
-                    for (Video_com.Results.Child_com c: v.child_com) {
-                        replyDetailBeans.add(new ReplyDetailBean(c.from_uid.user_profile.nick_name,c.from_uid.user_profile.image,c.from_uid.id,c.comment_id,c.comment,c.comment,c.add_time));
+                for (Video_com.Results v : response.body().getResults()) {
+                    replyDetailBeans=new ArrayList<>();
+                    for (Video_com.Results.Child_com c : v.child_com) {
+                        replyDetailBeans.add(new ReplyDetailBean(c.from_uid.user_profile.nick_name, c.from_uid.user_profile.image, c.from_uid.id, c.comment_id, c.comment, c.comment, c.add_time));
                     }
-                    commentsList.add(new CommentDetailBean(v.id,v.user.user_profile.nick_name,v.user.user_profile.image,v.comment,v.comment,v.child_com.size(),v.add_time,replyDetailBeans));
-                    replyDetailBeans.clear();
-                    expandableListView.setAdapter(videoReviewAdapter);
+                    commentsList.add(new CommentDetailBean(v.id, v.user.user_profile.nick_name, v.user.user_profile.image, v.comment, v.user.id, v.child_com.size(), v.add_time, v.is_love, v.point_love_nums, replyDetailBeans));
                 }
-                System.out.println(video_com);
+                Collections.reverse(commentsList);
+                Message msg = new Message();
+                msg.what = GET_COMMENTlIST;
+                handler.sendMessage(msg);
             }
 
             @Override
             public void onFailure(Call<Video_com> call, Throwable t) {
-                System.out.println(t);
             }
         });
+
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        iniVideo();
+                        initView();
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+    }
+
+
+    private void initView() {
+        expandableListView = findViewById(R.id.review_list);
+        bt_commont = findViewById(R.id.input);
+        bt_commont.setOnClickListener(this);
+        initExpandableListView();
+    }
+
+
+    private void initExpandableListView() {
+        expandableListView.setGroupIndicator(null);
         videoReviewAdapter = new VideoReviewAdapter(this, commentsList);
+        expandableListView.setAdapter(videoReviewAdapter);
 
 
         for (int i = 0; i < commentsList.size(); i++) {
@@ -221,7 +264,6 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
                 boolean isExpanded = expandableListView.isGroupExpanded(groupPosition);
-                Log.e(TAG, "onGroupClick: 当前的评论id>>>" + commentsList.get(groupPosition).getId());
                 expandableListView.expandGroup(groupPosition, false);
                 showReplyDialog(groupPosition);
                 return true;
@@ -259,22 +301,41 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         dialog.setContentView(commentView);
 
         View parent = (View) commentView.getParent();
-        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parent);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(parent);
         commentView.measure(0, 0);
         behavior.setPeekHeight(commentView.getMeasuredHeight());
 
         bt_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String commentContent = commentText.getText().toString().trim();
+                commentContent = commentText.getText().toString().trim();
                 if (!TextUtils.isEmpty(commentContent)) {
 
                     //commentOnWork(commentContent);
                     dialog.dismiss();
-                    CommentDetailBean detailBean = new CommentDetailBean("小明", "http://ucardstorevideo.b0.upaiyun.com/userLogo/9fa13ec6-dddd-46cb-9df0-4bbb32d83fc1.png", commentContent, "刚刚");
-                    videoReviewAdapter.addTheCommentData(detailBean);
-                    Toast.makeText(VideoWatchActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
 
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(Constant.BaseUrl)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    sharedPreferences = getSharedPreferences("Token", Context.MODE_PRIVATE);
+                    UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+                    Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            CommentDetailBean detailBean = new CommentDetailBean(response.body().getUser_profile().nick_name, response.body().getUser_profile().image, commentContent, getTime());
+                            videoReviewAdapter.addTheCommentData(detailBean);
+                            Toast.makeText(VideoWatchActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
+                            addVideo_com(commentText.getText().toString());
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+
+                        }
+                    });
                 } else {
                     Toast.makeText(VideoWatchActivity.this, "评论内容不能为空", Toast.LENGTH_SHORT).show();
                 }
@@ -309,16 +370,38 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         final EditText commentText = commentView.findViewById(R.id.dialog_comment_et);
         final Button bt_comment = (Button) commentView.findViewById(R.id.dialog_comment_bt);
         commentText.setHint("回复 " + commentsList.get(position).getNickName() + " 的评论:");
+
         dialog.setContentView(commentView);
         bt_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String replyContent = commentText.getText().toString().trim();
+                replyContent = commentText.getText().toString().trim();
                 if (!TextUtils.isEmpty(replyContent)) {
                     dialog.dismiss();
-                    ReplyDetailBean replyDetailBean = new ReplyDetailBean("小红", replyContent);
-                    videoReviewAdapter.addTheReplyData(replyDetailBean, position);
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(Constant.BaseUrl)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    sharedPreferences = getSharedPreferences("Token", Context.MODE_PRIVATE);
+                    UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+                    Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            replyDetailBean = new ReplyDetailBean(response.body().getUser_profile().getNick_name(), replyContent);
+                            videoReviewAdapter.addTheReplyData(replyDetailBean, position);
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+
+                        }
+                    });
+
                     Toast.makeText(VideoWatchActivity.this, "回复成功", Toast.LENGTH_SHORT).show();
+                    addReply(commentsList.get(position).getId(), commentsList.get(position).getUserId(), replyContent);
                 } else {
                     Toast.makeText(VideoWatchActivity.this, "回复内容不能为空", Toast.LENGTH_SHORT).show();
                 }
@@ -398,6 +481,78 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<VideoUrlInf> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public String getTime() {
+        Calendar calendar = Calendar.getInstance();
+//获取系统的日期
+//年
+        int year = calendar.get(Calendar.YEAR);
+//月
+        int month = calendar.get(Calendar.MONTH) + 1;
+//日
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+//获取系统时间
+//小时
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//分钟
+        int minute = calendar.get(Calendar.MINUTE);
+//秒
+        int second = calendar.get(Calendar.SECOND);
+
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    }
+
+    public void addVideo_com(String comment) {
+
+        intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        int video_id = bundle.getInt("video_id", -1);
+        sharedPreferences = getSharedPreferences("Token", 0);
+        String a = "JWT " + sharedPreferences.getString("Token", "");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
+        Call<Video_comCreate> call = video_comInterface.getComment(a, video_id, comment);
+        call.enqueue(new Callback<Video_comCreate>() {
+            @Override
+            public void onResponse(Call<Video_comCreate> call, Response<Video_comCreate> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Video_comCreate> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void addReply(int id, int uid, String comment) {
+
+
+        sharedPreferences = getSharedPreferences("Token", 0);
+        String a = "JWT " + sharedPreferences.getString("Token", "");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Video_comInterface video_comInterface = retrofit.create(Video_comInterface.class);
+        Call<Video_Reply> call = video_comInterface.getReply(a, id, id, uid, 1, comment);
+        call.enqueue(new Callback<Video_Reply>() {
+            @Override
+            public void onResponse(Call<Video_Reply> call, Response<Video_Reply> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Video_Reply> call, Throwable t) {
 
             }
         });

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
@@ -104,7 +105,8 @@ public class UserFragment extends Fragment {
                 TextView user_nickname = view.findViewById(R.id.user_nickname1);
                 TextView user_role = view.findViewById(R.id.user_rowid);
                 CircleImageView user_img = view.findViewById(R.id.user_image);
-                 user_nickname.setText(response.body().getUser_profile().getNick_name());
+                Glide.with(UserFragment.this).load(response.body().getUser_profile().getImage()).into(user_img);
+                user_nickname.setText(response.body().getUser_profile().getNick_name());
                 switch (response.body().getUser_profile().getNick_name()) {
                     case "student" : user_role.setText("学生");
                 }
