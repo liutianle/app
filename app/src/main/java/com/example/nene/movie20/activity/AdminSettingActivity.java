@@ -1,6 +1,5 @@
 package com.example.nene.movie20.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -9,8 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -25,28 +22,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
-import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.bumptech.glide.Glide;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
-import com.example.nene.movie20.data.Admin;
 import com.example.nene.movie20.data.CardBean;
-import com.example.nene.movie20.data.CommentBean;
-import com.example.nene.movie20.fragment.UserFragment;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,13 +60,14 @@ public class AdminSettingActivity extends AppCompatActivity {
     private TextView admin_adddress;
     private TextView admin_sex;
     private TextView admin_nickname;
-    private CircleImageView user_img;
+    private CircleImageView imageView;
     private OptionsPickerView pvOptions;
     private ArrayList<String> sex;
     private ArrayList<CardBean> cardItem = new ArrayList<>();
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
     private Handler handler;
+    private User_profile user_profile;
 
 
     @Override
@@ -85,17 +78,22 @@ public class AdminSettingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        admin_birth = findViewById(R.id.admin_birth);
+        admin_adddress = findViewById(R.id.admin_address);
+        admin_nickname = findViewById(R.id.admin_nickname);
+        admin_sex = findViewById(R.id.admin_sex);
+        imageView = findViewById(R.id.user_img);
+
+
         getUserInf();
 
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
-                    case  1:
+                    case 1:
                         //先加载数据
                         getCardData();
-
-                        admin_birth = findViewById(R.id.admin_birth);
                         admin_birth.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -103,7 +101,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-                        admin_adddress = findViewById(R.id.admin_address);
                         admin_adddress.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -111,7 +108,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-                        admin_nickname = findViewById(R.id.admin_nickname);
                         admin_nickname.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -120,7 +116,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                         });
 
 
-                        admin_sex = findViewById(R.id.admin_sex);
                         admin_sex.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -153,8 +148,11 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String address = text.getText().toString().trim();
-                admin_nickname.setText(address);
+                getUserInf();
+                String name = text.getText().toString().trim();
+                user_profile.setNick_name(name);
+                admin_nickname.setText(name);
+                modifyUserInf(user_profile);
             }
         });
 
@@ -196,8 +194,11 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getUserInf();
                 String address = text.getText().toString().trim();
                 admin_adddress.setText(address);
+                user_profile.setAddress(address);
+                modifyUserInf(user_profile);
             }
         });
 
@@ -237,8 +238,11 @@ public class AdminSettingActivity extends AppCompatActivity {
             @Override
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
+                getUserInf();
                 String tx = cardItem.get(options1).getPickerViewText();
+                user_profile.setSex(tx);
                 admin_sex.setText(tx);
+                modifyUserInf(user_profile);
             }
         })
                 .setLayoutRes(R.layout.pickerview_custom_options, new CustomListener() {
@@ -275,17 +279,19 @@ public class AdminSettingActivity extends AppCompatActivity {
         pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
-                admin_birth.setText(getTime(date));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                user_profile.setBirth(getTime(date));
+                admin_birth.setText(format.format(getTime(date)));
                 Log.i("pvTime", "onTimeSelect");
             }
 
         }).build();
     }
 
-    public String getTime(Date date){
-        Log.d("getTime", "getTime: "+date.getTime());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(date);
+    public Date getTime(Date date) {
+        Log.d("getTime", "getTime: " + date.getTime());
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return date;
     }
 
 
@@ -301,7 +307,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         exit_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(AdminSettingActivity.this,LoginActivity.class);
+                intent = new Intent(AdminSettingActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
@@ -317,7 +323,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         });
     }
 
-    public void modifyUserInf(User_profile user_profile){
+    public void modifyUserInf(User_profile user_profile) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -327,16 +333,17 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Token", 0);
 
-        Call<User> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", "") , user_profile);
+        Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
+                new File(user_profile.image), user_profile.birth, user_profile.sex, user_profile.address, user_profile.nick_name);
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<User_profile>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<User_profile> call, Response<User_profile> response) {
 
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<User_profile> call, Throwable t) {
 
             }
         });
@@ -349,21 +356,19 @@ public class AdminSettingActivity extends AppCompatActivity {
                 .build();
 
         SharedPreferences sharedPreferences = getSharedPreferences("Token", 0);
-        UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+        final UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
         Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                admin_birth = findViewById(R.id.admin_birth);
-                admin_birth.setText(response.body().getUser_profile().getBirth());
-                admin_nickname = findViewById(R.id.admin_nickname);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                admin_birth.setText(format.format(response.body().getUser_profile().getBirth()));
                 admin_nickname.setText(response.body().getUser_profile().getNick_name());
-                admin_adddress = findViewById(R.id.admin_address);
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
-                admin_sex = findViewById(R.id.admin_sex);
                 admin_sex.setText(response.body().getUser_profile().getSex());
-                user_img = findViewById(R.id.user_image);
-//                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(user_img);
+                user_profile = new User_profile();
+                user_profile = response.body().getUser_profile();
+                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(imageView);
 
                 Message msg = new Message();
                 msg.what = IS_GET_USER_INFORMATION;

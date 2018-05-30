@@ -40,27 +40,27 @@ public class UserInfUtils {
         });
     }
 
-    public void modifyUserInf(User_profile user_profile){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.BaseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
-
-        Call<User> call = userInfInterface.getModifyInformation("JWT" , user_profile);
-
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
-            }
-        });
-
-    }
+//    public void modifyUserInf(User_profile user_profile){
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Constant.BaseUrl)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+//
+//        Call<User> call = userInfInterface.getModifyInformation("JWT" , user_profile);
+//
+//        call.enqueue(new Callback<User>() {
+//            @Override
+//            public void onResponse(Call<User> call, Response<User> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<User> call, Throwable t) {
+//
+//            }
+//        });
+//
+//    }
 }
