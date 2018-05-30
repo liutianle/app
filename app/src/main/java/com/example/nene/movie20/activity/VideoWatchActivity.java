@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,9 +81,11 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private SharedPreferences sharedPreferences;
     private String replyContent;
     private ReplyDetailBean replyDetailBean;
-    Handler handler;
-    TextView content;
-    TextView title;
+    private Handler handler;
+    private TextView content;
+    private TextView title;
+    boolean isSave = false;
+    private ImageView save;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,12 +134,30 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                     case 1:
                         iniVideo();
                         initView();
+                        initSave();
                         break;
                 }
                 return true;
             }
         });
 
+
+    }
+
+    private void initSave() {
+       save = findViewById(R.id.video_like);
+       save.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if (!isSave){
+                   isSave = true;
+                   save.setColorFilter(Color.parseColor("#FF5C5C"));
+               }else {
+                   save.setColorFilter(Color.parseColor("#aaaaaa"));
+                   isSave = false;
+               }
+           }
+       });
 
     }
 

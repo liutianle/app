@@ -28,26 +28,48 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="9"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/movie_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="8dp"
-            android:text="TextView"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/movie_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="11dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="TextView" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/movie_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="8dp"
-            android:text="TextView" />
+            <ImageView
+                android:id="@+id/video_like"
+                android:src="@drawable/save_btn"
+                android:layout_marginTop="20dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+            </LinearLayout>
+        </LinearLayout>
 
         </LinearLayout>
 
@@ -67,6 +89,11 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/colorPrimary"
                 android:paddingBottom="8dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:background="@color/black">
+        </View>
 
 
     </android.support.design.widget.AppBarLayout>

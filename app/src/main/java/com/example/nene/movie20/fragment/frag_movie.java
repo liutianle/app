@@ -54,8 +54,6 @@ public class frag_movie extends Fragment {
     private VideoSectionAdapter movieSectionAdapter;
     private VideoSectionAdapter movieSectionAdapter2;
 
-
-
     public static Fragment newInstance() {
         if (instance == null) {
             instance = new frag_movie();
