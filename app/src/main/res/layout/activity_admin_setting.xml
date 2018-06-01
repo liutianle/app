@@ -58,11 +58,11 @@
                         android:layout_height="wrap_content" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/user_img"
+                        android:id="@+id/admin_img"
                         android:layout_width="0dp"
                         android:layout_height="80dp"
                         android:layout_weight="3"
-                        android:src="@drawable/user_logo" />
+                        android:src="@drawable/doc_word"/>
 
                     <ImageView
                         android:layout_gravity="center"
