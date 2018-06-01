@@ -104,7 +104,6 @@ public class AdminSettingActivity extends AppCompatActivity {
         admin_sex = findViewById(R.id.admin_sex);
         admin_imagine = findViewById(R.id.admin_img);
 
-
         getUserInf();
 
         handler = new Handler(new Handler.Callback() {
@@ -143,12 +142,12 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-//                        admin_imagine.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                upload();
-//                            }
-//                        });
+                        admin_imagine.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                upload();
+                            }
+                        });
 
                         initView();
                         initTime();
@@ -389,6 +388,7 @@ public class AdminSettingActivity extends AppCompatActivity {
 
 
     private void getCardData() {
+        //先置空，不然每次都会增加
         cardItem = new ArrayList<>();
         cardItem.add(new CardBean(1, "男"));
         cardItem.add(new CardBean(1, "女"));
@@ -459,7 +459,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                 admin_nickname.setText(response.body().getUser_profile().getNick_name());
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
                 admin_sex.setText(response.body().getUser_profile().getSex());
-                admin_imagine = findViewById(R.id.user_image);
 //                Glide.with(AdminSettingActivity.this).load(imgUrl).into(admin_imagine);
                 user_profile = new User_profile();
                 user_profile = response.body().getUser_profile();
