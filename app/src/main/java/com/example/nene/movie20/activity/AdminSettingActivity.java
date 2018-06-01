@@ -57,6 +57,8 @@ import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -381,7 +383,7 @@ public class AdminSettingActivity extends AppCompatActivity {
             @Override
             public void onTimeSelect(Date date, View v) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                user_profile.setBirth(getTime(date));
+                user_profile.setBirth(format.format(getTime(date)));
                 admin_birth.setText(format.format(getTime(date)));
                 Log.i("pvTime", "onTimeSelect");
             }
@@ -461,8 +463,8 @@ public class AdminSettingActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                admin_birth.setText(format.format(response.body().getUser_profile().getBirth()));
+//                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                admin_birth.setText(response.body().getUser_profile().getBirth());
                 admin_nickname.setText(response.body().getUser_profile().getNick_name());
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
                 admin_sex.setText(response.body().getUser_profile().getSex());
