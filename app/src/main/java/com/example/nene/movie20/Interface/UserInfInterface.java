@@ -5,6 +5,8 @@ import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.UserInformation;
 import com.example.nene.movie20.models.User_profile;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.Date;
@@ -35,7 +37,7 @@ public interface UserInfInterface {
     @PUT("re_user/update/")
     Call<User_profile> getModifyInformation(@Header("Authorization") String token,
                                     @Part("image") File img,
-                                    @Part("birth") Date birth,
+                                    @Part("birth") String birth,
                                     @Part("sex") String sex,
                                     @Part("address") String address,
                                     @Part("nick_name") String nick_name);

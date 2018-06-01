@@ -1,6 +1,6 @@
 package com.example.nene.movie20.models;
 
-import java.util.Date;
+import org.w3c.dom.Text;
 
 /**
  * Created by sam- on 2018/5/9.
@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class User_profile {
     public String image;
-    public Date birth;
+    public String birth;
     public String sex;
     public String address;
     public String nick_name;
@@ -21,11 +21,11 @@ public class User_profile {
         this.image = image;
     }
 
-    public Date getBirth() {
+    public String getBirth() {
         return birth;
     }
 
-    public void setBirth(Date birth) {
+    public void setBirth(String birth) {
         this.birth = birth;
     }
 

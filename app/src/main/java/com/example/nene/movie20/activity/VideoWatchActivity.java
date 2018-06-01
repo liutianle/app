@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.Short2;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nene.movie20.Interface.GetVideoInterface;
+import com.example.nene.movie20.Interface.UserFavVideoInterface;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.Interface.Video_comInterface;
 import com.example.nene.movie20.R;
@@ -42,12 +44,15 @@ import com.example.nene.movie20.models.Video_comCreate;
 import com.google.gson.Gson;
 import com.jaeger.library.StatusBarUtil;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
@@ -65,7 +70,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class VideoWatchActivity extends AppCompatActivity implements View.OnClickListener {
-    private final int GET_COMMENTlIST = 1;
+    private final int GET_COMMENTLIST = 1;
+    private final int GET_FAVVIDEOLIST = 1;
     private RecyclerView recyclerView;
     private List<CommentDetailBean> commentsList;
     private List<ReplyDetailBean> replyDetailBeans;
@@ -82,10 +88,12 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     private String replyContent;
     private ReplyDetailBean replyDetailBean;
     private Handler handler;
+    private Handler handler2;
     private TextView content;
     private TextView title;
     boolean isSave = false;
     private ImageView save;
+    private int video_id;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,7 +118,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call<Video_com> call, Response<Video_com> response) {
                 for (Video_com.Results v : response.body().getResults()) {
-                    replyDetailBeans=new ArrayList<>();
+                    replyDetailBeans = new ArrayList<>();
                     for (Video_com.Results.Child_com c : v.child_com) {
                         replyDetailBeans.add(new ReplyDetailBean(c.from_uid.user_profile.nick_name, c.from_uid.user_profile.image, c.from_uid.id, c.comment_id, c.comment, c.comment, c.add_time));
                     }
@@ -118,7 +126,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                 }
                 Collections.reverse(commentsList);
                 Message msg = new Message();
-                msg.what = GET_COMMENTlIST;
+                msg.what = GET_COMMENTLIST;
                 handler.sendMessage(msg);
             }
 
@@ -145,20 +153,37 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initSave() {
-       save = findViewById(R.id.video_like);
-       save.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (!isSave){
-                   isSave = true;
-                   save.setColorFilter(Color.parseColor("#FF5C5C"));
-               }else {
-                   save.setColorFilter(Color.parseColor("#aaaaaa"));
-                   isSave = false;
-               }
-           }
-       });
+        intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        video_id = bundle.getInt("video_id", -1);
+        getFavList(video_id);
+        save = findViewById(R.id.video_like);
+        handler2 = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.what) {
+                    case GET_FAVVIDEOLIST:
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
+                                if (!isSave) {
+                                    isSave = true;
+                                    addFavVideo(video_id);
+                                    save.setColorFilter(Color.parseColor("#FF5C5C"));
+                                } else {
+                                    save.setColorFilter(Color.parseColor("#aaaaaa"));
+                                    isSave = false;
+                                    deleteFavVideo(video_id);
+                                }
+                            }
+                        });
+                        ;
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -477,6 +502,78 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    public void addFavVideo(int id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        UserFavVideoInterface userFavVideoInterface = retrofit.create(UserFavVideoInterface.class);
+
+        sharedPreferences = getSharedPreferences("Token", 0);
+        Call<String> call = userFavVideoInterface.getVideoId("JWT " + sharedPreferences.getString("Token", "-1"), id);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void deleteFavVideo(int id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserFavVideoInterface userFavVideoInterface = retrofit.create(UserFavVideoInterface.class);
+        sharedPreferences = getSharedPreferences("Token", 0);
+        Call<String> call = userFavVideoInterface.getDelVideoid("JWT " + sharedPreferences.getString("Token", ""), id);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getFavList(final int id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserFavVideoInterface userFavVideoInterface = retrofit.create(UserFavVideoInterface.class);
+        sharedPreferences = getSharedPreferences("Token", 0);
+        Call<List<Map<String, VideoUrlInf>>> call = userFavVideoInterface.getFavVideoList("JWT " + sharedPreferences.getString("Token", ""));
+        call.enqueue(new Callback<List<Map<String, VideoUrlInf>>>() {
+            @Override
+            public void onResponse(Call<List<Map<String, VideoUrlInf>>> call, Response<List<Map<String, VideoUrlInf>>> response) {
+                for (Map<String, VideoUrlInf> map: response.body()) {
+                    if(map.get("video").getId() == id){
+                        save.setColorFilter(Color.parseColor("#FF5C5C"));
+                        isSave = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Map<String, VideoUrlInf>>> call, Throwable t) {
+
+            }
+        });
+    }
 }
 
