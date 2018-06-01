@@ -20,8 +20,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -39,40 +37,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
-import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
-import com.example.nene.movie20.data.Admin;
 import com.example.nene.movie20.data.CardBean;
-import com.example.nene.movie20.data.CommentBean;
-import com.google.gson.Gson;
-import com.example.nene.movie20.fragment.UserFragment;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.ImageEngine;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,15 +66,9 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.plugins.RxJavaPlugins;
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -113,6 +92,8 @@ public class AdminSettingActivity extends AppCompatActivity {
     private Handler handler;
     private static final int REQUEST_CODE_CHOOSE = 23;
     private List<Uri> imgUrl;
+    private User_profile user_profile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,17 +103,22 @@ public class AdminSettingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        admin_birth = findViewById(R.id.admin_birth);
+        admin_adddress = findViewById(R.id.admin_address);
+        admin_nickname = findViewById(R.id.admin_nickname);
+        admin_sex = findViewById(R.id.admin_sex);
+        imageView = findViewById(R.id.user_img);
+
+
         getUserInf();
 
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
-                    case  1:
+                    case 1:
                         //先加载数据
                         getCardData();
-
-                        admin_birth = findViewById(R.id.admin_birth);
                         admin_birth.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -140,7 +126,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-                        admin_adddress = findViewById(R.id.admin_address);
                         admin_adddress.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -148,7 +133,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-                        admin_nickname = findViewById(R.id.admin_nickname);
                         admin_nickname.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -157,7 +141,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                         });
 
 
-                        admin_sex = findViewById(R.id.admin_sex);
                         admin_sex.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -266,8 +249,11 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String address = text.getText().toString().trim();
-                admin_nickname.setText(address);
+                getUserInf();
+                String name = text.getText().toString().trim();
+                user_profile.setNick_name(name);
+                admin_nickname.setText(name);
+                modifyUserInf(user_profile);
             }
         });
 
@@ -309,8 +295,11 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getUserInf();
                 String address = text.getText().toString().trim();
                 admin_adddress.setText(address);
+                user_profile.setAddress(address);
+                modifyUserInf(user_profile);
             }
         });
 
@@ -350,8 +339,11 @@ public class AdminSettingActivity extends AppCompatActivity {
             @Override
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
+                getUserInf();
                 String tx = cardItem.get(options1).getPickerViewText();
+                user_profile.setSex(tx);
                 admin_sex.setText(tx);
+                modifyUserInf(user_profile);
             }
         })
                 .setLayoutRes(R.layout.pickerview_custom_options, new CustomListener() {
@@ -388,17 +380,19 @@ public class AdminSettingActivity extends AppCompatActivity {
         pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
-                admin_birth.setText(getTime(date));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                user_profile.setBirth(getTime(date));
+                admin_birth.setText(format.format(getTime(date)));
                 Log.i("pvTime", "onTimeSelect");
             }
 
         }).build();
     }
 
-    public String getTime(Date date){
-        Log.d("getTime", "getTime: "+date.getTime());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(date);
+    public Date getTime(Date date) {
+        Log.d("getTime", "getTime: " + date.getTime());
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return date;
     }
 
 
@@ -414,7 +408,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         exit_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(AdminSettingActivity.this,LoginActivity.class);
+                intent = new Intent(AdminSettingActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
@@ -430,7 +424,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         });
     }
 
-    public void modifyUserInf(User_profile user_profile){
+    public void modifyUserInf(User_profile user_profile) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -440,16 +434,16 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Token", 0);
 
-        retrofit2.Call<User> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", "") , user_profile);
-
-        call.enqueue(new Callback<User>() {
+        Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
+                new File(user_profile.image), user_profile.birth, user_profile.sex, user_profile.address, user_profile.nick_name);
+        call.enqueue(new Callback<User_profile>() {
             @Override
-            public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
+            public void onResponse(Call<User_profile> call, Response<User_profile> response) {
 
             }
 
             @Override
-            public void onFailure(retrofit2.Call<User> call, Throwable t) {
+            public void onFailure(Call<User_profile> call, Throwable t) {
 
             }
         });
@@ -462,21 +456,21 @@ public class AdminSettingActivity extends AppCompatActivity {
                 .build();
 
         SharedPreferences sharedPreferences = getSharedPreferences("Token", 0);
-        UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
-        retrofit2.Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
+        final UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+        Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
-                admin_birth = findViewById(R.id.admin_birth);
-                admin_birth.setText(response.body().getUser_profile().getBirth());
-                admin_nickname = findViewById(R.id.admin_nickname);
+            public void onResponse(Call<User> call, Response<User> response) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                admin_birth.setText(format.format(response.body().getUser_profile().getBirth()));
                 admin_nickname.setText(response.body().getUser_profile().getNick_name());
-                admin_adddress = findViewById(R.id.admin_address);
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
-                admin_sex = findViewById(R.id.admin_sex);
                 admin_sex.setText(response.body().getUser_profile().getSex());
                 admin_imagine = findViewById(R.id.user_image);
 //                Glide.with(AdminSettingActivity.this).load(imgUrl).into(admin_imagine);
+                user_profile = new User_profile();
+                user_profile = response.body().getUser_profile();
+                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(imageView);
 
                 Message msg = new Message();
                 msg.what = IS_GET_USER_INFORMATION;

@@ -1,50 +1,50 @@
 package com.example.nene.movie20.adapter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.support.design.widget.BottomSheetDialog;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+        import android.content.Context;
+        import android.content.SharedPreferences;
+        import android.graphics.Color;
+        import android.support.design.widget.BottomSheetDialog;
+        import android.text.TextUtils;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.BaseExpandableListAdapter;
+        import android.widget.ImageView;
+        import android.widget.TextView;
 
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.nene.movie20.Interface.PointInterface;
-import com.example.nene.movie20.R;
-import com.example.nene.movie20.data.CommentDetailBean;
-import com.example.nene.movie20.data.ReplyDetailBean;
-import com.example.nene.movie20.models.Constant;
-import com.example.nene.movie20.models.Point;
+        import com.bumptech.glide.Glide;
+        import com.bumptech.glide.load.engine.DiskCacheStrategy;
+        import com.example.nene.movie20.Interface.PointInterface;
+        import com.example.nene.movie20.R;
+        import com.example.nene.movie20.data.CommentDetailBean;
+        import com.example.nene.movie20.data.ReplyDetailBean;
+        import com.example.nene.movie20.models.Constant;
+        import com.example.nene.movie20.models.Point;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.ArrayList;
+        import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+        import de.hdodenhof.circleimageview.CircleImageView;
+        import retrofit2.Call;
+        import retrofit2.Callback;
+        import retrofit2.Response;
+        import retrofit2.Retrofit;
+        import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by nene on 2018/4/18.
  */
 
-public class VideoReviewAdapter extends BaseExpandableListAdapter{
+public class VideoReviewAdapter extends BaseExpandableListAdapter {
     private List<CommentDetailBean> commentDetailBeans;
     private List<ReplyDetailBean> replyDetailBeans;
     private Context context;
     private int num;
     private static final String TAG = "CommentExpandAdapter";
 
-    public VideoReviewAdapter(Context context, List<CommentDetailBean> commentDetailBeans){
+    public VideoReviewAdapter(Context context, List<CommentDetailBean> commentDetailBeans) {
         this.context = context;
         this.commentDetailBeans = commentDetailBeans;
     }
@@ -56,11 +56,10 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
 
     @Override
     public int getChildrenCount(int i) {
-        if (commentDetailBeans.get(i).getReplyList() == null){
+        if (commentDetailBeans.get(i).getReplyList() == null) {
             return 0;
-        }
-        else{
-            return commentDetailBeans.get(i).getReplyList().size() >0 ? commentDetailBeans.get(i).getReplyList().size():0;
+        } else {
+            return commentDetailBeans.get(i).getReplyList().size() > 0 ? commentDetailBeans.get(i).getReplyList().size() : 0;
         }
     }
 
@@ -81,24 +80,25 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
 
     @Override
     public long getChildId(int i, int i1) {
-        return getCombinedChildId(i,i1);
+        return getCombinedChildId(i, i1);
     }
 
     @Override
     public boolean hasStableIds() {
         return true;
     }
+
     boolean isLike = false;
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpand, View convertView, ViewGroup viewGroup) {
         final GroupHolder groupHolder;
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.review_list, viewGroup, false);
             groupHolder = new GroupHolder(convertView);
             convertView.setTag(groupHolder);
-        }else {
+        } else {
             groupHolder = (GroupHolder) convertView.getTag();
         }
         Glide.with(context).load(R.drawable.user_other)
@@ -110,26 +110,36 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
         groupHolder.tv_time.setText(commentDetailBeans.get(groupPosition).getCreateDate());
         groupHolder.tv_content.setText(commentDetailBeans.get(groupPosition).getContent());
         groupHolder.tv_num.setText(String.valueOf(commentDetailBeans.get(groupPosition).getLove_num()));
-        if(commentDetailBeans.get(groupPosition).getIs_love()) {
+        if (commentDetailBeans.get(groupPosition).getIs_love()) {
+            groupHolder.iv_like.setColorFilter(Color.parseColor("#FF5C5C"));
+//            isLike = commentDetailBeans.get(groupPosition).getIs_love();
+//            num = commentDetailBeans.get(groupPosition).getLove_num();
+        }
+        else {
             groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
-            isLike = commentDetailBeans.get(groupPosition).getIs_love();
-            num = commentDetailBeans.get(groupPosition).getLove_num();
-
+//            isLike = commentDetailBeans.get(groupPosition).getIs_love();
+//            num = commentDetailBeans.get(groupPosition).getLove_num();
         }
 
         groupHolder.iv_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isLike){
+                num = commentDetailBeans.get(groupPosition).getLove_num();
+                isLike = commentDetailBeans.get(groupPosition).getIs_love();
+                if (!isLike) {
                     isLike = true;
+                    commentDetailBeans.get(groupPosition).setIs_love(true);
                     groupHolder.iv_like.setColorFilter(Color.parseColor("#FF5C5C"));
                     point(commentDetailBeans.get(groupPosition).getId());
                     groupHolder.tv_num.setText(String.valueOf(++num));
-                }else {
+                    commentDetailBeans.get(groupPosition).setLove_num(num);
+                } else {
                     groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
+                    commentDetailBeans.get(groupPosition).setIs_love(false);
                     isLike = false;
-                    point(commentDetailBeans.get(groupPosition).getId());
+                    pointDel(commentDetailBeans.get(groupPosition).getId());
                     groupHolder.tv_num.setText(String.valueOf(--num));
+                    commentDetailBeans.get(groupPosition).setLove_num(num);
                 }
             }
         });
@@ -139,20 +149,19 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean b, View convertView, ViewGroup viewGroup) {
         final ChildHolder childHolder;
-        if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.comment_reply_item,viewGroup, false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.comment_reply_item, viewGroup, false);
             childHolder = new ChildHolder(convertView);
             convertView.setTag(childHolder);
-        }
-        else {
+        } else {
             childHolder = (ChildHolder) convertView.getTag();
         }
 
         String replyUser = commentDetailBeans.get(groupPosition).getReplyList().get(childPosition).getNickName();
-        if(!TextUtils.isEmpty(replyUser)){
+        if (!TextUtils.isEmpty(replyUser)) {
             childHolder.tv_name.setText(replyUser + ":");
-        }else {
-            childHolder.tv_name.setText("无名"+":");
+        } else {
+            childHolder.tv_name.setText("无名" + ":");
         }
 
         childHolder.tv_content.setText(commentDetailBeans.get(groupPosition).getReplyList().get(childPosition).getContent());
@@ -165,12 +174,13 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
         return true;
     }
 
-    private class GroupHolder{
+    private class GroupHolder {
         private CircleImageView logo;
         private TextView tv_name, tv_content, tv_time, tv_num;
         private ImageView iv_like;
+
         public GroupHolder(View view) {
-            logo =  view.findViewById(R.id.comment_item_logo);
+            logo = view.findViewById(R.id.comment_item_logo);
             tv_content = view.findViewById(R.id.comment_item_content);
             tv_name = view.findViewById(R.id.comment_item_userName);
             tv_time = view.findViewById(R.id.comment_item_time);
@@ -180,48 +190,51 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
 
     }
 
-    private class ChildHolder{
+    private class ChildHolder {
         private TextView tv_name, tv_content;
+
         public ChildHolder(View view) {
             tv_name = (TextView) view.findViewById(R.id.reply_item_user);
             tv_content = (TextView) view.findViewById(R.id.reply_item_content);
         }
     }
+
     BottomSheetDialog dialog;
 
-    public void addTheCommentData(CommentDetailBean commentDetailBean){
-        if(commentDetailBean !=null){
-            Log.e(TAG, "addTheCommentData: >>>>该刷新评论列表了" );
+    public void addTheCommentData(CommentDetailBean commentDetailBean) {
+        if (commentDetailBean != null) {
+            Log.e(TAG, "addTheCommentData: >>>>该刷新评论列表了");
 
             commentDetailBeans.add(commentDetailBean);
             notifyDataSetChanged();
-        }else {
+        } else {
             throw new IllegalArgumentException("评论数据为空!");
         }
     }
-    public void addTheReplyData(ReplyDetailBean replyDetailBean, int groupPosition){
-        if(replyDetailBean !=null){
-            Log.e(TAG, "addTheReplyData: >>>>该刷新回复列表了:"+ replyDetailBean.toString() );
-            if(commentDetailBeans.get(groupPosition).getReplyList() != null ){
-                Log.e(TAG, "addTheReplyData: >>>>>replyList不为空" );
+
+    public void addTheReplyData(ReplyDetailBean replyDetailBean, int groupPosition) {
+        if (replyDetailBean != null) {
+            Log.e(TAG, "addTheReplyData: >>>>该刷新回复列表了:" + replyDetailBean.toString());
+            if (commentDetailBeans.get(groupPosition).getReplyList() != null) {
+                Log.e(TAG, "addTheReplyData: >>>>>replyList不为空");
                 commentDetailBeans.get(groupPosition).getReplyList().add(replyDetailBean);
-            }else {
+            } else {
                 List<ReplyDetailBean> replyList = new ArrayList<>();
                 replyList.add(replyDetailBean);
                 commentDetailBeans.get(groupPosition).setReplyList(replyList);
             }
 
             notifyDataSetChanged();
-        }else {
+        } else {
             throw new IllegalArgumentException("回复数据为空!");
         }
     }
 
-    private void addReplyList(List<ReplyDetailBean> replyDetailBeans, int groupPosition){
-        if(commentDetailBeans.get(groupPosition).getReplyList() != null ){
+    private void addReplyList(List<ReplyDetailBean> replyDetailBeans, int groupPosition) {
+        if (commentDetailBeans.get(groupPosition).getReplyList() != null) {
             commentDetailBeans.get(groupPosition).getReplyList().clear();
             commentDetailBeans.get(groupPosition).getReplyList().addAll(replyDetailBeans);
-        }else {
+        } else {
 
             commentDetailBeans.get(groupPosition).setReplyList(replyDetailBeans);
         }
@@ -238,8 +251,8 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
         PointInterface pointInterface = retrofit.create(PointInterface.class);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("Token", 0);
-        String a = sharedPreferences.getString("Token" , "");
-        Call<Point> call = pointInterface.getCommentId("JWT " + sharedPreferences.getString("Token", ""), commit_id,1);
+        String a = sharedPreferences.getString("Token", "");
+        Call<Point> call = pointInterface.getCommentId("JWT " + sharedPreferences.getString("Token", ""), commit_id, 1);
         call.enqueue(new Callback<Point>() {
             @Override
             public void onResponse(Call<Point> call, Response<Point> response) {
@@ -253,5 +266,27 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter{
         });
     }
 
+    public void pointDel(int commit_id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        PointInterface pointInterface = retrofit.create(PointInterface.class);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Token", 0);
+        String a = sharedPreferences.getString("Token", "");
+        Call<Point> call = pointInterface.getDelCommentId("JWT " + sharedPreferences.getString("Token", ""), commit_id, 1);
+        call.enqueue(new Callback<Point>() {
+            @Override
+            public void onResponse(Call<Point> call, Response<Point> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Point> call, Throwable t) {
+
+            }
+        });
+    }
 }
 

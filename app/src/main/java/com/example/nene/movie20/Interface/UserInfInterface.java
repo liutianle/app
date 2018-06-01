@@ -5,14 +5,24 @@ import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.UserInformation;
 import com.example.nene.movie20.models.User_profile;
 
+import java.io.File;
 import java.lang.ref.SoftReference;
+import java.util.Date;
+import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by sam- on 2018/4/24.
@@ -21,7 +31,12 @@ public interface UserInfInterface {
     @GET("user/{id}/")
     Call<User> getinformation(@Header("Authorization") String token, @Path("id") String id);
 
-    @GET("user/{id}")
-    Call<User> getModifyInformation(@Header("Authorization") String token,
-                                    @Query("userprofile")User_profile user_profile);
+    @Multipart
+    @PUT("re_user/update/")
+    Call<User_profile> getModifyInformation(@Header("Authorization") String token,
+                                    @Part("image") File img,
+                                    @Part("birth") Date birth,
+                                    @Part("sex") String sex,
+                                    @Part("address") String address,
+                                    @Part("nick_name") String nick_name);
 }

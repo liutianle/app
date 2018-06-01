@@ -1,12 +1,14 @@
 package com.example.nene.movie20.models;
 
+import java.util.Date;
+
 /**
  * Created by sam- on 2018/5/9.
  */
 
 public class User_profile {
     public String image;
-    public String birth;
+    public Date birth;
     public String sex;
     public String address;
     public String nick_name;
@@ -19,11 +21,11 @@ public class User_profile {
         this.image = image;
     }
 
-    public String getBirth() {
+    public Date getBirth() {
         return birth;
     }
 
-    public void setBirth(String birth) {
+    public void setBirth(Date birth) {
         this.birth = birth;
     }
 
