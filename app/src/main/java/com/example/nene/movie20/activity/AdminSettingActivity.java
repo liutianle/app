@@ -1,20 +1,16 @@
 package com.example.nene.movie20.activity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.Message;
@@ -26,16 +22,13 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -54,10 +47,10 @@ import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
+//import com.zhihu.matisse.MimeType;
+import com.example.nene.movie20.utils.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -86,7 +79,7 @@ public class AdminSettingActivity extends AppCompatActivity {
     private TextView admin_nickname;
     private CircleImageView admin_imagine;
     private OptionsPickerView pvOptions;
-    private CircleImageView imageView;
+    private ImageView imageView;
     private ArrayList<String> sex;
     private ArrayList<CardBean> cardItem = new ArrayList<>();
     private BottomSheetDialog dialog;
@@ -109,7 +102,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         admin_adddress = findViewById(R.id.admin_address);
         admin_nickname = findViewById(R.id.admin_nickname);
         admin_sex = findViewById(R.id.admin_sex);
-        imageView = findViewById(R.id.user_img);
+        admin_imagine = findViewById(R.id.admin_img);
 
 
         getUserInf();
@@ -150,13 +143,12 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
-                        admin_imagine = findViewById(R.id.user_img);
-                        admin_imagine.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                upload();
-                            }
-                        });
+//                        admin_imagine.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                upload();
+//                            }
+//                        });
 
                         initView();
                         initTime();
@@ -166,8 +158,6 @@ public class AdminSettingActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        imageView = findViewById(R.id.user_img);
 
         initView();
         initTime();
@@ -187,7 +177,7 @@ public class AdminSettingActivity extends AppCompatActivity {
                     @Override
                     public void onNext(Boolean aBoolean) {
                         Matisse.from(AdminSettingActivity.this)
-                                .choose(MimeType.allOf())
+                                .choose(com.zhihu.matisse.MimeType.ofImage())
                                 .countable(true)
                                 .maxSelectable(1)
                                 .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))//图片大小
@@ -399,10 +389,11 @@ public class AdminSettingActivity extends AppCompatActivity {
 
 
     private void getCardData() {
-        int i = 1;
-        cardItem.add(new CardBean(i, "男"));
-        cardItem.add(new CardBean(i, "女"));
-        cardItem.add(new CardBean(i, "保密"));
+        cardItem = new ArrayList<>();
+        cardItem.add(new CardBean(1, "男"));
+        cardItem.add(new CardBean(1, "女"));
+        cardItem.add(new CardBean(1, "保密"));
+
     }
 
     private void initView() {
@@ -472,7 +463,7 @@ public class AdminSettingActivity extends AppCompatActivity {
 //                Glide.with(AdminSettingActivity.this).load(imgUrl).into(admin_imagine);
                 user_profile = new User_profile();
                 user_profile = response.body().getUser_profile();
-                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(imageView);
+//                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(admin_imagine);
 
                 Message msg = new Message();
                 msg.what = IS_GET_USER_INFORMATION;

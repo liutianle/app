@@ -122,7 +122,7 @@ public class UserFragment extends Fragment {
                     @Override
                     public void onNext(Boolean aBoolean) {
                         Matisse.from(getActivity())
-                                .choose(MimeType.allOf())
+                                .choose(MimeType.ofVideo())
                                 .countable(true)
                                 .maxSelectable(1)
                                 .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
