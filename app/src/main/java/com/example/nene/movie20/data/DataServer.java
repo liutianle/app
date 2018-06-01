@@ -73,7 +73,7 @@ public class DataServer {
         List<AdminSection> list = new ArrayList<>();
         list.add(new AdminSection(true,"学堂",false));
         list.add(new AdminSection(new Admin(R.drawable.admin_save, "收藏视频")));
-        list.add(new AdminSection(new Admin(R.drawable.admin_download,"离线视频")));
+        list.add(new AdminSection(new Admin(R.drawable.admin_download,"上传视频")));
         list.add(new AdminSection(new Admin(R.drawable.admin_file,"我的文档")));
         list.add(new AdminSection(true,"论坛",false));
         list.add(new AdminSection(new Admin(R.drawable.admin_question, "我的提问")));
@@ -96,5 +96,16 @@ public class DataServer {
         list.add(new Exam(R.drawable.exam_nongzi, "农资业", "12", "24"));
 
         return list;
+    }
+
+    public static List<Doc> getDocData() {
+        List<Doc> docData = new ArrayList<>();
+        docData.add(new Doc("养猪","ppt", "畜牧业"));
+        docData.add(new Doc("养鱼","pdf", "水产业"));
+        docData.add(new Doc("养虾","excel", "水产业"));
+        docData.add(new Doc("养猪","word", "畜牧业"));
+        docData.add(new Doc("养鱼","pdf", "水产业"));
+        docData.add(new Doc("养虾","excel", "水产业"));
+        return docData;
     }
 }

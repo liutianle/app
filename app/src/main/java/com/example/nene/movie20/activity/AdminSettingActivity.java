@@ -1,12 +1,15 @@
 package com.example.nene.movie20.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -61,6 +64,11 @@ import com.example.nene.movie20.fragment.UserFragment;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.ImageEngine;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,8 +76,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.plugins.RxJavaPlugins;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -91,7 +103,7 @@ public class AdminSettingActivity extends AppCompatActivity {
     private TextView admin_adddress;
     private TextView admin_sex;
     private TextView admin_nickname;
-    private CircleImageView user_img;
+    private CircleImageView admin_imagine;
     private OptionsPickerView pvOptions;
     private CircleImageView imageView;
     private ArrayList<String> sex;
@@ -99,7 +111,8 @@ public class AdminSettingActivity extends AppCompatActivity {
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
     private Handler handler;
-
+    private static final int REQUEST_CODE_CHOOSE = 23;
+    private List<Uri> imgUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +165,14 @@ public class AdminSettingActivity extends AppCompatActivity {
                             }
                         });
 
+                        admin_imagine = findViewById(R.id.user_img);
+                        admin_imagine.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                upload();
+                            }
+                        });
+
                         initView();
                         initTime();
                         initSex();
@@ -161,14 +182,7 @@ public class AdminSettingActivity extends AppCompatActivity {
             }
         });
 
-
         imageView = findViewById(R.id.user_img);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopueWindow();
-            }
-        });
 
         initView();
         initTime();
@@ -176,242 +190,67 @@ public class AdminSettingActivity extends AppCompatActivity {
 
     }
 
-    private void showPopueWindow() {
-//        View popView = View.inflate(this, R.layout.popup_window, null);
-//        Button bt_album = popView.findViewById(R.id.btn_pop_album);
-//        Button bt_camera = popView.findViewById(R.id.btn_pop_camera);
-//        Button bt_cancle = (Button) popView.findViewById(R.id.btn_pop_cancel);
-//
-//        //获取屏幕宽高
-//        int weight = getResources().getDisplayMetrics().widthPixels;
-//        int height = getResources().getDisplayMetrics().heightPixels * 1/3;
-//
-//        final PopupWindow popupWindow = new PopupWindow(popView, weight, height);
-//        popupWindow.setAnimationStyle(R.style.anim_popup_dir);
-//        popupWindow.setFocusable(true);
-//        //点击外部popueWindow消失
-//        popupWindow.setOutsideTouchable(true);
-//
-//        bt_album.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(intent,RESULT_LOAD_IMAGE);
-//            }
-//        });
-//
-//        bt_camera.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                takeCamera(RESULT_CAMERA_IMAGE);
-//                popupWindow.dismiss();
-//            }
-//        });
-//        bt_cancle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                popupWindow.dismiss();
-//            }
-//        });
-//        //popupWindow消失屏幕变为不透明
-//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
-//                layoutParams.alpha = 1.0f;
-//                getWindow().setAttributes(layoutParams);
-//            }
-//        });
-//        //popupWindow出现屏幕变为半透明
-//        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
-//        layoutParams.alpha = 0.5f;
-//        getWindow().setAttributes(layoutParams);
-//        popupWindow.showAtLocation(popView, Gravity.BOTTOM, 0,50);
+    private void upload() {
+        RxPermissions rxPermissions = new RxPermissions(AdminSettingActivity.this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Matisse.from(AdminSettingActivity.this)
+                                .choose(MimeType.allOf())
+                                .countable(true)
+                                .maxSelectable(1)
+                                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))//图片大小
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)//屏幕方向
+                                .thumbnailScale(0.85f)//缩放比例
+                                .imageEngine(new GlideEngine())
+                                .forResult(REQUEST_CODE_CHOOSE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK ) {
-//            if (requestCode == RESULT_LOAD_IMAGE && null != data) {
-//                Uri selectedImage = data.getData();
-//                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//                Cursor cursor = getContentResolver().query(selectedImage,
-//                        filePathColumn, null, null, null);
-//                cursor.moveToFirst();
-//
-//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                final String picturePath = cursor.getString(columnIndex);
-//                upload(picturePath);
-//                cursor.close();
-//            }else if (requestCode == RESULT_CAMERA_IMAGE){
-//
-//                SimpleTarget target = new SimpleTarget<Bitmap>() {
-//
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        upload(saveMyBitmap(resource).getAbsolutePath());
-//                    }
-//
-//                    @Override
-//                    public void onLoadStarted(Drawable placeholder) {
-//                        super.onLoadStarted(placeholder);
-//
-//                    }
-//
-//                    @Override
-//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                        super.onLoadFailed(e, errorDrawable);
-//
-//                    }
-//                };
-//
-//                Glide.with(AdminSettingActivity.this).load(mCurrentPhotoPath)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                        .override(1080, 1920)//图片压缩
-//                        .centerCrop()
-//                        .dontAnimate()
-//                        .into(target);
-//            }
-//        }
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            imgUrl = Matisse.obtainResult(data);
+            Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(this,imgUrl.get(0)));
+            admin_imagine.setImageBitmap(bitmap);
+//            Glide.with(AdminSettingActivity.this).load(imgUrl.get(0)).into(admin_imagine);
+        }
+    }
+    //以上方法得到的imgUrl.get(0)要转为绝对路径
+    public static String getRealPathFromUri(Context context, Uri contentUri){
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }finally {
+            if (cursor != null){
+                cursor.close();
+            }
+        }
     }
 
-    private void upload(String picturePath) {
-//        final ProgressDialog pb= new ProgressDialog(this);
-//
-//        pb.setMessage("正在上传");
-//        pb.setCancelable(false);
-//        pb.show();
-//
-//        imageUpLoad(picturePath, new Response<FileUpload>() {
-//
-//            @Override
-//            public void onSuccess(FileUpload response) {
-//                super.onSuccess(response);
-//                if (response.success) {
-//                    myFileId = response.fileID;
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            ToastUtils.showShortToast("上传成功");
-//                            pb.dismiss();
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onFaile(String e) {
-//                super.onFaile(e);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        pb.dismiss();
-//                        ToastUtils.showShortToast("上传失败");
-//                    }
-//                });
-//            }
-//        });
-    }
-
-//    public static void imageUpLoad(String localPath, final Response<FileUpload> callBack) {
-//        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
-//        OkHttpClient client = new OkHttpClient();
-//
-//
-//        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-//
-//        File f = new File(localPath);
-//        builder.addFormDataPart("file", f.getName(), RequestBody.create(MEDIA_TYPE_PNG, f));
-//
-//        final MultipartBody requestBody = builder.build();
-//        //构建请求
-//        final Request request = new Request.Builder()
-//                .url("http://  ")//地址
-//                .post(requestBody)//添加请求体
-//                .build();
-//
-//        client.newCall(request).enqueue(new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//
-//                callBack.onFaile(e.getMessage());
-//                System.out.println("上传失败:e.getLocalizedMessage() = " + e.getLocalizedMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//
-//                FileUpload resultBean = new Gson().fromJson(response.body().string(), FileUpload.class);
-//                callBack.onSuccess(resultBean);
-//            }
-//        });
-
-//    }
-
-    //将bitmap转化为png格式
-//    public File saveMyBitmap(Bitmap mBitmap){
-//        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-//        File file = null;
-//        try {
-//            file = File.createTempFile(
-//                    UploadAccess.generateFileName(),  /* prefix */
-//                    ".jpg",         /* suffix */
-//                    storageDir      /* directory */
-//            );
-//
-//            FileOutputStream out=new FileOutputStream(file);
-//            mBitmap.compress(Bitmap.CompressFormat.JPEG, 20, out);
-//            out.flush();
-//            out.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return  file;
-//    }
-//
-//    private void takeCamera(int num) {
-//
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            photoFile = createImageFile();
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-//                        Uri.fromFile(photoFile));
-//            }
-//        }
-//
-//        startActivityForResult(takePictureIntent, num);//跳转界面传回拍照所得数据
-//    }
-    private File createImageFile() {
-//        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        File image = null;
-//        try {
-//            image = File.createTempFile(
-//                    generateFileName(),  /* prefix */
-//                    ".jpg",         /* suffix */
-//                    storageDir      /* directory */
-//            );
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    public static String generateFileName() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        return imageFileName;
-    }
 
     private void showNameDialog() {
         dialog = new BottomSheetDialog(this);
@@ -636,8 +475,8 @@ public class AdminSettingActivity extends AppCompatActivity {
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
                 admin_sex = findViewById(R.id.admin_sex);
                 admin_sex.setText(response.body().getUser_profile().getSex());
-                user_img = findViewById(R.id.user_image);
-//                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(user_img);
+                admin_imagine = findViewById(R.id.user_image);
+//                Glide.with(AdminSettingActivity.this).load(imgUrl).into(admin_imagine);
 
                 Message msg = new Message();
                 msg.what = IS_GET_USER_INFORMATION;

@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.nene.movie20.Interface.GetVideoInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.adapter.VideoListAdapter;
@@ -67,6 +68,17 @@ public class VideoSearchResultActivity extends AppCompatActivity {
         data = new ArrayList<>();
 
         videoResultAdapter = new VideoResultAdapter(R.layout.content_video_search_result, data);
+        //结果跳转
+        videoResultAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(VideoSearchResultActivity.this, VideoWatchActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("video_id", data.get(position).getId());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(videoResultAdapter);
     }
 

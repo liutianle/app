@@ -1,19 +1,23 @@
 package com.example.nene.movie20.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -26,15 +30,24 @@ import com.example.nene.movie20.data.AdminSection;
 import com.example.nene.movie20.data.DataServer;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.User;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Url;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by nene on 2018/4/13.
@@ -47,6 +60,8 @@ public class UserFragment extends Fragment {
     private List<AdminSection> data = DataServer.getAdminData();
     private AdminSectionAdapter adminSectionAdapter;
     private Intent intent;
+    private static final int REQUEST_CODE_CHOOSE = 23;
+    private List<Uri> videoUri;
 
     public static Fragment newInstance() {
         if (instance == null){
@@ -83,11 +98,59 @@ public class UserFragment extends Fragment {
         adminSectionAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                Log.d("user", "onItemClick: "+ position);
+                switch (position){
+                    case 2:
+                        uploadVideo();
+                        break;
+                }
             }
         });
 
         recyclerView.setAdapter(adminSectionAdapter);
+    }
+
+    private void uploadVideo() {
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Matisse.from(getActivity())
+                                .choose(MimeType.allOf())
+                                .countable(true)
+                                .maxSelectable(1)
+                                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                                .thumbnailScale(0.85f)
+                                .imageEngine(new GlideEngine())
+                                .forResult(REQUEST_CODE_CHOOSE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK){
+            videoUri = Matisse.obtainResult(data);
+            
+        }
     }
 
     public void getUserInf() {
