@@ -566,6 +566,9 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                         save.setColorFilter(Color.parseColor("#FF5C5C"));
                         isSave = true;
                     }
+                    Message msg = new Message();
+                    msg.what = GET_FAVVIDEOLIST;
+                    handler2.sendMessage(msg);
                 }
             }
 
