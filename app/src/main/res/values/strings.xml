@@ -8,4 +8,5 @@
     <string name="title_activity_Login">LoginActivity</string>
     <string name="title_activity_admin_setting">AdminSettingActivity</string>
     <string name="title_activity_video_search">VideoSearchActivity</string>
+    <string name="title_activity_video_upload">VideoUploadActivity</string>
 </resources>

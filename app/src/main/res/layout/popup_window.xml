@@ -12,18 +12,18 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btn_pop_album"
+            android:id="@+id/btn_video"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:text="本地相册"
+            android:text="上传视频"
             android:background="#ffff"
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/btn_pop_camera"
+            android:id="@+id/btn_doc"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:text="相机拍摄"
+            android:text="上传文档"
             android:background="#ffff"
             android:textSize="18sp" />
 

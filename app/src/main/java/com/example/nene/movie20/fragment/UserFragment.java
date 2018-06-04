@@ -11,11 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,7 @@ import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.activity.AdminSettingActivity;
 import com.example.nene.movie20.activity.SplashActivity;
+import com.example.nene.movie20.activity.VideoUploadActivity;
 import com.example.nene.movie20.adapter.AdminSectionAdapter;
 import com.example.nene.movie20.data.AdminSection;
 import com.example.nene.movie20.data.DataServer;
@@ -101,7 +106,7 @@ public class UserFragment extends Fragment {
                 Log.d("user", "onItemClick: "+ position);
                 switch (position){
                     case 2:
-                        uploadVideo();
+                        showPopWindow();
                         break;
                 }
             }
@@ -110,39 +115,6 @@ public class UserFragment extends Fragment {
         recyclerView.setAdapter(adminSectionAdapter);
     }
 
-    private void uploadVideo() {
-        RxPermissions rxPermissions = new RxPermissions(getActivity());
-        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        Matisse.from(getActivity())
-                                .choose(MimeType.ofVideo())
-                                .countable(true)
-                                .maxSelectable(1)
-                                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                                .thumbnailScale(0.85f)
-                                .imageEngine(new GlideEngine())
-                                .forResult(REQUEST_CODE_CHOOSE);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -165,14 +137,14 @@ public class UserFragment extends Fragment {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                TextView user_nickname = view.findViewById(R.id.user_nickname1);
-                TextView user_role = view.findViewById(R.id.user_rowid);
-                CircleImageView user_img = view.findViewById(R.id.user_image);
-                Glide.with(UserFragment.this).load(response.body().getUser_profile().getImage()).into(user_img);
-                user_nickname.setText(response.body().getUser_profile().getNick_name());
-                switch (response.body().getUser_profile().getNick_name()) {
-                    case "student" : user_role.setText("学生");
-                }
+//                TextView user_nickname = view.findViewById(R.id.user_nickname1);
+//                TextView user_role = view.findViewById(R.id.user_rowid);
+//                CircleImageView user_img = view.findViewById(R.id.user_image);
+//                Glide.with(UserFragment.this).load(response.body().getUser_profile().getImage()).into(user_img);
+//                user_nickname.setText(response.body().getUser_profile().getNick_name());
+//                switch (response.body().getUser_profile().getNick_name()) {
+//                    case "student" : user_role.setText("学生");
+//                }
             }
 
             @Override
@@ -181,4 +153,61 @@ public class UserFragment extends Fragment {
             }
         });
     }
+
+    private void showPopWindow(){
+        View popView = View.inflate(getActivity(),R.layout.popup_window, null);
+        Button bt_video = (Button) popView.findViewById(R.id.btn_video);
+        Button bt_doc = (Button) popView.findViewById(R.id.btn_doc);
+        Button bt_cancle = (Button) popView.findViewById(R.id.btn_pop_cancel);
+
+        int weight = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels*1/3;
+
+        final PopupWindow popupWindow = new PopupWindow(popView, weight, height);
+        popupWindow.setAnimationStyle(R.style.anim_popup_dir);
+        popupWindow.setFocusable(true);
+
+        popupWindow.setOutsideTouchable(true);
+
+        bt_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), VideoUploadActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bt_doc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        bt_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
+                layoutParams.alpha = 1.0f;
+                getActivity().getWindow().setAttributes(layoutParams);
+            }
+        });
+        //popupWindow出现屏幕变为半透明
+        WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
+        layoutParams.alpha = 0.5f;
+        getActivity().getWindow().setAttributes(layoutParams);
+        popupWindow.showAtLocation(popView, Gravity.BOTTOM, 0,50);
+
+    }
+
+
+
+
 }

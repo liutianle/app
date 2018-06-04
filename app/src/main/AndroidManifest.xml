@@ -4,12 +4,8 @@
     package="com.example.nene.movie20">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE">
-
-    </uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE">
-
-    </uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
     <application
         android:name=".activity.MyApplication"
@@ -24,9 +20,7 @@
         <activity
             android:name=".activity.VideoSearchActivity"
             android:label="@string/title_activity_video_search"
-            android:theme="@style/myApp">
-
-        </activity>
+            android:theme="@style/myApp"></activity>
         <activity
             android:name=".activity.VideoWatchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -53,8 +47,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_Login"
-            android:theme="@style/myApp">
-        </activity>
+            android:theme="@style/myApp"></activity>
         <activity
             android:name=".activity.VideoListActivity"
             android:label="@string/title_activity_video_list"
@@ -66,6 +59,10 @@
         <activity
             android:name=".activity.AdminSettingActivity"
             android:label="@string/title_activity_admin_setting"
+            android:theme="@style/myApp" />
+        <activity
+            android:name=".activity.VideoUploadActivity"
+            android:label="@string/title_activity_video_upload"
             android:theme="@style/myApp"></activity>
     </application>
 
