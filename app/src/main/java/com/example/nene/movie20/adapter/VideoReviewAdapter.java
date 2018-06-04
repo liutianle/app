@@ -112,13 +112,9 @@ public class VideoReviewAdapter extends BaseExpandableListAdapter {
         groupHolder.tv_num.setText(String.valueOf(commentDetailBeans.get(groupPosition).getLove_num()));
         if (commentDetailBeans.get(groupPosition).getIs_love()) {
             groupHolder.iv_like.setColorFilter(Color.parseColor("#FF5C5C"));
-//            isLike = commentDetailBeans.get(groupPosition).getIs_love();
-//            num = commentDetailBeans.get(groupPosition).getLove_num();
         }
         else {
             groupHolder.iv_like.setColorFilter(Color.parseColor("#aaaaaa"));
-//            isLike = commentDetailBeans.get(groupPosition).getIs_love();
-//            num = commentDetailBeans.get(groupPosition).getLove_num();
         }
 
         groupHolder.iv_like.setOnClickListener(new View.OnClickListener() {

@@ -268,7 +268,7 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                     call.enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
-                            CommentDetailBean detailBean = new CommentDetailBean(response.body().getUser_profile().nick_name, response.body().getUser_profile().image, commentContent, getTime());
+                            CommentDetailBean detailBean = new CommentDetailBean(response.body().getUser_profile().nick_name, response.body().getUser_profile().image, commentContent, getTime(),false);
                             videoReviewAdapter.addTheCommentData(detailBean);
                             Toast.makeText(VideoWatchActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
                             addVideo_com(commentText.getText().toString());
@@ -565,6 +565,9 @@ public class VideoWatchActivity extends AppCompatActivity implements View.OnClic
                         save.setColorFilter(Color.parseColor("#FF5C5C"));
                         isSave = true;
                     }
+                    Message msg = new Message();
+                    msg.what = GET_FAVVIDEOLIST;
+                    handler2.sendMessage(msg);
                 }
             }
 

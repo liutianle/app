@@ -9,6 +9,7 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -34,9 +35,9 @@ public interface UserInfInterface {
     Call<User> getinformation(@Header("Authorization") String token, @Path("id") String id);
 
     @Multipart
-    @PUT("re_user/update/")
+    @PUT("zwp_userinfo/update/")
     Call<User_profile> getModifyInformation(@Header("Authorization") String token,
-                                    @Part("image") File img,
+                                    @Part("image") String img,
                                     @Part("birth") String birth,
                                     @Part("sex") String sex,
                                     @Part("address") String address,

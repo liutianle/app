@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.SweepGradient;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.Message;
+import android.service.carrier.CarrierService;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -39,20 +42,31 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.bumptech.glide.Glide;
+import com.example.nene.movie20.Interface.Upload_VideoInterface;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.data.CardBean;
+import com.example.nene.movie20.data.Video;
 import com.example.nene.movie20.models.Constant;
+import com.example.nene.movie20.models.Token;
 import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
+import com.qiniu.android.common.AutoZone;
+import com.qiniu.android.common.FixedZone;
+import com.qiniu.android.common.Zone;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhihu.matisse.Matisse;
-//import com.zhihu.matisse.MimeType;
-import com.example.nene.movie20.utils.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 
-import java.io.File;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,6 +83,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdminSettingActivity extends AppCompatActivity {
     private final int IS_GET_USER_INFORMATION = 1;
+    private final int IS_GET_UPLOAD_VIDEO_TOKEN = 1;
     private Intent intent;
     private LinearLayout exit_login;
     private ImageView back;
@@ -85,9 +100,14 @@ public class AdminSettingActivity extends AppCompatActivity {
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
     private Handler handler;
+    private Handler handler2;
     private static final int REQUEST_CODE_CHOOSE = 23;
     private List<Uri> imgUrl;
     private User_profile user_profile;
+    private String token;
+    private UploadManager uploadManager;
+    private String imgurlbyqiniu;
+    private Date newDate;
 
 
     @Override
@@ -204,13 +224,17 @@ public class AdminSettingActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             imgUrl = Matisse.obtainResult(data);
-            Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(this,imgUrl.get(0)));
+            Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(this, imgUrl.get(0)));
             admin_imagine.setImageBitmap(bitmap);
+            String a = getRealPathFromUri(this,imgUrl.get(0));
+            String key = a.substring(a.lastIndexOf("/")+1);
+            uploadto(getRealPathFromUri(this, imgUrl.get(0)),key);
 //            Glide.with(AdminSettingActivity.this).load(imgUrl.get(0)).into(admin_imagine);
         }
     }
+
     //以上方法得到的imgUrl.get(0)要转为绝对路径
-    public static String getRealPathFromUri(Context context, Uri contentUri){
+    public static String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
@@ -218,8 +242,8 @@ public class AdminSettingActivity extends AppCompatActivity {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
-        }finally {
-            if (cursor != null){
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
         }
@@ -419,7 +443,7 @@ public class AdminSettingActivity extends AppCompatActivity {
 
     public void modifyUserInf(User_profile user_profile) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.BaseUrl)
+                .baseUrl("http://172.19.73.54:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -427,8 +451,27 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Token", 0);
 
-        Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
-                new File(user_profile.image), user_profile.birth, user_profile.sex, user_profile.address, user_profile.nick_name);
+
+
+
+        String dateStr = "2016-12-31";
+        //获得SimpleDateFormat类，我们转换为yyyy-MM-dd的时间格式
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            //使用SimpleDateFormat的parse()方法生成Date
+        Date date = null;
+        try {
+            newDate = sf.parse(dateStr);
+
+            System.out.println(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //打印Date
+            System.out.println(date);
+
+
+            Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
+                user_profile.image, "1777-11-11", user_profile.sex,user_profile.address,user_profile.nick_name);
         call.enqueue(new Callback<User_profile>() {
             @Override
             public void onResponse(Call<User_profile> call, Response<User_profile> response) {
@@ -449,7 +492,7 @@ public class AdminSettingActivity extends AppCompatActivity {
                 .build();
 
         SharedPreferences sharedPreferences = getSharedPreferences("Token", 0);
-        final UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
+        UserInfInterface userInfInterface = retrofit.create(UserInfInterface.class);
         Call<User> call = userInfInterface.getinformation("JWT " + sharedPreferences.getString("Token", ""), "1");
         call.enqueue(new Callback<User>() {
             @Override
@@ -476,6 +519,75 @@ public class AdminSettingActivity extends AppCompatActivity {
         });
     }
 
+    public void uploadto(final String  data, final String key) {
+//
+//FixedZone.zone0   华东机房
+//FixedZone.zone1   华北机房
+//FixedZone.zone2   华南机房
+//FixedZone.zoneNa0 北美机房
+
+//自动识别上传区域
+//AutoZone.autoZone
+
+
+        getUploadToken();
+        Configuration config = new Configuration.Builder()
+                .zone(AutoZone.autoZone)
+                .build();
+        uploadManager = new UploadManager(config);
+        handler2 = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch(msg.what){
+                    case 1 :
+                        uploadManager.put(data, key, token,
+                                new UpCompletionHandler() {
+                                    @Override
+                                    public void complete(String key, ResponseInfo info, JSONObject res) {
+                                        //res包含hash、key等信息，具体字段取决于上传策略的设置
+                                        if (info.isOK()) {
+                                            Log.i("qiniu", "Upload Success");
+
+                                        } else {
+                                            Log.i("qiniu", "Upload Fail");
+                                            //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
+                                        }
+                                        Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
+                                    }
+                                }, null);;
+                    break;
+                }
+                return false;
+            }
+        });
+
+    }
+
+    public void getUploadToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.BaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Upload_VideoInterface upload_videoInterface = retrofit.create(Upload_VideoInterface.class);
+
+        Call<Token> call = upload_videoInterface.getUpload_Video();
+        call.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                token = response.body().getToken();
+                System.out.println(token);
+                Message msg = new Message();
+                msg.what = IS_GET_UPLOAD_VIDEO_TOKEN;
+                handler2.sendMessage(msg);
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+
+            }
+        });
+
+    }
 }
 
 
