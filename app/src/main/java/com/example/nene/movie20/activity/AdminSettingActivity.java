@@ -60,14 +60,13 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhihu.matisse.Matisse;
-//import com.zhihu.matisse.MimeType;
-import com.example.nene.movie20.utils.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 
 import org.json.JSONObject;
 
-import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,6 +107,7 @@ public class AdminSettingActivity extends AppCompatActivity {
     private String token;
     private UploadManager uploadManager;
     private String imgurlbyqiniu;
+    private Date newDate;
 
 
     @Override
@@ -443,7 +443,7 @@ public class AdminSettingActivity extends AppCompatActivity {
 
     public void modifyUserInf(User_profile user_profile) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.BaseUrl)
+                .baseUrl("http://172.19.73.54:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -451,8 +451,27 @@ public class AdminSettingActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Token", 0);
 
-        Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
-                new File(user_profile.image), user_profile.birth, user_profile.sex, user_profile.address, user_profile.nick_name);
+
+
+
+        String dateStr = "2016-12-31";
+        //获得SimpleDateFormat类，我们转换为yyyy-MM-dd的时间格式
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            //使用SimpleDateFormat的parse()方法生成Date
+        Date date = null;
+        try {
+            newDate = sf.parse(dateStr);
+
+            System.out.println(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //打印Date
+            System.out.println(date);
+
+
+            Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
+                user_profile.image, "1777-11-11", user_profile.sex,user_profile.address,user_profile.nick_name);
         call.enqueue(new Callback<User_profile>() {
             @Override
             public void onResponse(Call<User_profile> call, Response<User_profile> response) {
