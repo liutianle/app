@@ -9,13 +9,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.SweepGradient;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.os.Handler;
 import android.os.Message;
-import android.service.carrier.CarrierService;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -46,14 +43,12 @@ import com.example.nene.movie20.Interface.Upload_VideoInterface;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
 import com.example.nene.movie20.data.CardBean;
-import com.example.nene.movie20.data.Video;
+import com.example.nene.movie20.data.CommentBean;
 import com.example.nene.movie20.models.Constant;
 import com.example.nene.movie20.models.Token;
 import com.example.nene.movie20.models.User;
 import com.example.nene.movie20.models.User_profile;
 import com.qiniu.android.common.AutoZone;
-import com.qiniu.android.common.FixedZone;
-import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -65,10 +60,10 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -94,8 +89,6 @@ public class AdminSettingActivity extends AppCompatActivity {
     private TextView admin_nickname;
     private CircleImageView admin_imagine;
     private OptionsPickerView pvOptions;
-    private ImageView imageView;
-    private ArrayList<String> sex;
     private ArrayList<CardBean> cardItem = new ArrayList<>();
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
@@ -107,8 +100,8 @@ public class AdminSettingActivity extends AppCompatActivity {
     private String token;
     private UploadManager uploadManager;
     private String imgurlbyqiniu;
-    private Date newDate;
-
+    private Date date;
+    private String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +125,7 @@ public class AdminSettingActivity extends AppCompatActivity {
                 switch (msg.what) {
                     case 1:
                         //先加载数据
+                        time = user_profile.birth;
                         getCardData();
                         admin_birth.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -158,7 +152,7 @@ public class AdminSettingActivity extends AppCompatActivity {
                         admin_sex.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                pvOptions.show();
+                                 pvOptions.show();
                             }
                         });
 
@@ -174,13 +168,14 @@ public class AdminSettingActivity extends AppCompatActivity {
                         initSex();
                         break;
                 }
+                initView();
+                initTime();
+                initSex();
                 return true;
             }
         });
 
-        initView();
-        initTime();
-        initSex();
+
 
     }
 
@@ -226,9 +221,11 @@ public class AdminSettingActivity extends AppCompatActivity {
             imgUrl = Matisse.obtainResult(data);
             Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(this, imgUrl.get(0)));
             admin_imagine.setImageBitmap(bitmap);
-            String a = getRealPathFromUri(this,imgUrl.get(0));
-            String key = a.substring(a.lastIndexOf("/")+1);
-            uploadto(getRealPathFromUri(this, imgUrl.get(0)),key);
+            String key = getRealPathFromUri(this, imgUrl.get(0)).substring(getRealPathFromUri(this, imgUrl.get(0)).lastIndexOf("/") + 1);
+            uploadto(getRealPathFromUri(this, imgUrl.get(0)), key);
+            imgurlbyqiniu = "http://p71yd5lgg.bkt.clouddn.com/" + key;
+            user_profile.setImage(imgurlbyqiniu);
+            modifyUserInf(user_profile);
 //            Glide.with(AdminSettingActivity.this).load(imgUrl.get(0)).into(admin_imagine);
         }
     }
@@ -264,7 +261,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getUserInf();
+//                getUserInf();
                 String name = text.getText().toString().trim();
                 user_profile.setNick_name(name);
                 admin_nickname.setText(name);
@@ -310,7 +307,7 @@ public class AdminSettingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getUserInf();
+//                getUserInf();
                 String address = text.getText().toString().trim();
                 admin_adddress.setText(address);
                 user_profile.setAddress(address);
@@ -354,10 +351,17 @@ public class AdminSettingActivity extends AppCompatActivity {
             @Override
             public void onOptionsSelect(int options1, int option2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
-                getUserInf();
+//                getUserInf();
                 String tx = cardItem.get(options1).getPickerViewText();
-                user_profile.setSex(tx);
                 admin_sex.setText(tx);
+                switch (tx){
+                    case "女":
+                        user_profile.setSex("female");
+                        break;
+                    case "男":
+                        user_profile.setSex("male");
+                        break;
+                }
                 modifyUserInf(user_profile);
             }
         })
@@ -392,21 +396,32 @@ public class AdminSettingActivity extends AppCompatActivity {
     }
 
     public void initTime() {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = format.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
         pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
+
             @Override
             public void onTimeSelect(Date date, View v) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 user_profile.setBirth(format.format(getTime(date)));
                 admin_birth.setText(format.format(getTime(date)));
-                Log.i("pvTime", "onTimeSelect");
+                modifyUserInf(user_profile);
             }
 
-        }).build();
+        })
+                .setDate(calendar)
+                .build();
+
     }
 
     public Date getTime(Date date) {
         Log.d("getTime", "getTime: " + date.getTime());
-//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return date;
     }
 
@@ -416,7 +431,6 @@ public class AdminSettingActivity extends AppCompatActivity {
         cardItem = new ArrayList<>();
         cardItem.add(new CardBean(1, "男"));
         cardItem.add(new CardBean(1, "女"));
-        cardItem.add(new CardBean(1, "保密"));
 
     }
 
@@ -443,7 +457,7 @@ public class AdminSettingActivity extends AppCompatActivity {
 
     public void modifyUserInf(User_profile user_profile) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://172.19.73.54:8000")
+                .baseUrl(Constant.BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -452,26 +466,8 @@ public class AdminSettingActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Token", 0);
 
 
-
-
-        String dateStr = "2016-12-31";
-        //获得SimpleDateFormat类，我们转换为yyyy-MM-dd的时间格式
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-            //使用SimpleDateFormat的parse()方法生成Date
-        Date date = null;
-        try {
-            newDate = sf.parse(dateStr);
-
-            System.out.println(newDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //打印Date
-            System.out.println(date);
-
-
-            Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
-                user_profile.image, "1777-11-11", user_profile.sex,user_profile.address,user_profile.nick_name);
+        Call<User_profile> call = userInfInterface.getModifyInformation("JWT " + sharedPreferences.getString("Token", ""),
+                user_profile.image, user_profile.birth, user_profile.sex, user_profile.address, user_profile.nick_name);
         call.enqueue(new Callback<User_profile>() {
             @Override
             public void onResponse(Call<User_profile> call, Response<User_profile> response) {
@@ -501,11 +497,20 @@ public class AdminSettingActivity extends AppCompatActivity {
                 admin_birth.setText(response.body().getUser_profile().getBirth());
                 admin_nickname.setText(response.body().getUser_profile().getNick_name());
                 admin_adddress.setText(response.body().getUser_profile().getAddress());
-                admin_sex.setText(response.body().getUser_profile().getSex());
+                admin_adddress.setText(response.body().getUser_profile().getAddress());
+//                admin_sex.setText(response.body().getUser_profile().getSex());
+                switch (response.body().getUser_profile().getSex()){
+                    case "female":
+                        admin_sex.setText("女");
+                        break;
+                    case "male":
+                        admin_sex.setText("男");
+                        break;
+                }
 //                Glide.with(AdminSettingActivity.this).load(imgUrl).into(admin_imagine);
                 user_profile = new User_profile();
                 user_profile = response.body().getUser_profile();
-//                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(admin_imagine);
+                Glide.with(AdminSettingActivity.this).load(response.body().getUser_profile().getImage()).into(admin_imagine);
 
                 Message msg = new Message();
                 msg.what = IS_GET_USER_INFORMATION;
@@ -519,15 +524,15 @@ public class AdminSettingActivity extends AppCompatActivity {
         });
     }
 
-    public void uploadto(final String  data, final String key) {
-//
-//FixedZone.zone0   华东机房
-//FixedZone.zone1   华北机房
-//FixedZone.zone2   华南机房
-//FixedZone.zoneNa0 北美机房
+    public void uploadto(final String data, final String key) {
+        //
+        //FixedZone.zone0   华东机房
+        //FixedZone.zone1   华北机房
+        //FixedZone.zone2   华南机房
+        //FixedZone.zoneNa0 北美机房
 
-//自动识别上传区域
-//AutoZone.autoZone
+        //自动识别上传区域
+        //AutoZone.autoZoner
 
 
         getUploadToken();
@@ -538,8 +543,8 @@ public class AdminSettingActivity extends AppCompatActivity {
         handler2 = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                switch(msg.what){
-                    case 1 :
+                switch (msg.what) {
+                    case 1:
                         uploadManager.put(data, key, token,
                                 new UpCompletionHandler() {
                                     @Override
@@ -554,8 +559,9 @@ public class AdminSettingActivity extends AppCompatActivity {
                                         }
                                         Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
                                     }
-                                }, null);;
-                    break;
+                                }, null);
+                        ;
+                        break;
                 }
                 return false;
             }

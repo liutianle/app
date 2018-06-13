@@ -63,6 +63,6 @@ dependencies {
     api "io.reactivex.rxjava2:rxjava:2.1.9"
     /*rxPermissions*/
     api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
-    compile 'com.qiniu:qiniu-android-sdk:7.3.+'
-    implementation 'org.testng:testng:6.9.6'
+    api 'com.qiniu:qiniu-android-sdk:7.3.+'
+
 }

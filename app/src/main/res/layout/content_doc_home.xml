@@ -28,6 +28,8 @@
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/docName"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:text="养猪大全"
                 android:textSize="18sp"
                 android:layout_width="match_parent"

@@ -9,7 +9,7 @@ import java.util.List;
 public class CommentBean {
     private int code;
     private String message;
-    private Data data;
+    private CommentData data;
     public void setCode(int code) {
         this.code = code;
     }
@@ -24,14 +24,14 @@ public class CommentBean {
         return message;
     }
 
-    public void setData(Data data) {
+    public void setData(CommentData data) {
         this.data = data;
     }
-    public Data getData() {
+    public CommentData getData() {
         return data;
     }
 
-    public class Data {
+    public class CommentData {
 
         private int total;
         private List<CommentDetailBean> list;

@@ -19,6 +19,7 @@ public class Doc {
         this.docName = docName;
     }
 
+    //doc
     public String getDocType() {
         return docType;
     }
@@ -26,7 +27,8 @@ public class Doc {
     public void setDocType(String docType) {
         this.docType = docType;
     }
-    
+
+    //plant
     public String getDocClass() {
         return docClass;
     }
