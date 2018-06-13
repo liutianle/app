@@ -1,7 +1,9 @@
 package com.example.nene.movie20.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.nene.movie20.Interface.GetDocInterface;
 import com.example.nene.movie20.Interface.UserInfInterface;
 import com.example.nene.movie20.R;
@@ -71,7 +74,7 @@ public class frag_doc extends Fragment{
             @Override
             public void onResponse(Call<DocInf> call, Response<DocInf> response) {
                 for (DocInf.DocResultBean v : response.body().getResults()){
-                    data.add(new Doc(v.getFile_name(), v.getFile_type(), v.getText_type()));
+                    data.add(new Doc(v.getFile_name(), v.getFile_type(), v.getText_type(), v.getPdf_path()));
                 }
                 docAdapter.setNewData(data);
             }
@@ -93,7 +96,18 @@ public class frag_doc extends Fragment{
 
         docAdapter = new DocAdapter(R.layout.content_doc_home, data);
 
+        docAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(data.get(position).getDocPdfUrl()));
+                startActivity(intent);
+            }
+        });
+
         docRecyclerView.setAdapter(docAdapter);
         return view;
+
+
     }
 }

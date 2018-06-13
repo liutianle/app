@@ -80,14 +80,4 @@ public class DataServer {
         return list;
     }
 
-    public static List<Doc> getDocData() {
-        List<Doc> docData = new ArrayList<>();
-        docData.add(new Doc("养猪","ppt", "畜牧业"));
-        docData.add(new Doc("养鱼","pdf", "水产业"));
-        docData.add(new Doc("养虾","excel", "水产业"));
-        docData.add(new Doc("养猪","word", "畜牧业"));
-        docData.add(new Doc("养鱼","pdf", "水产业"));
-        docData.add(new Doc("养虾","excel", "水产业"));
-        return docData;
-    }
 }

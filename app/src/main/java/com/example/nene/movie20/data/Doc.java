@@ -4,11 +4,13 @@ public class Doc {
     private String docName;
     private String docType;
     private String docClass;
+    private String docPdfUrl;
 
-    public Doc(String docName, String docType, String docClass) {
+    public Doc(String docName, String docType, String docClass, String docPdfUrl) {
         this.docName = docName;
         this.docType = docType;
         this.docClass = docClass;
+        this.docPdfUrl = docPdfUrl;
     }
 
     public String getDocName() {
@@ -35,5 +37,13 @@ public class Doc {
 
     public void setDocClass(String docClass) {
         this.docClass = docClass;
+    }
+
+    public String getDocPdfUrl() {
+        return docPdfUrl;
+    }
+
+    public void setDocPdfUrl(String docPdfUrl) {
+        this.docPdfUrl = docPdfUrl;
     }
 }
